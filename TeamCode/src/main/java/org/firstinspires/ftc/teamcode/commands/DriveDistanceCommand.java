@@ -27,9 +27,9 @@ public class DriveDistanceCommand implements Command {
     private ElapsedTime timer;
 
     private double currLeftPos, pastLeftPos, deltaTime, deltaLeftPos, currRightPos, pastRightPos, deltaRightPos, currTime, pastTime;
-    public DriveDistanceCommand(DriveSubsystem driveSubsystem, double[] PID, double targetDistance, double targetVelocity, double timeout) {
+    public DriveDistanceCommand(DriveSubsystem driveSubsystem, double targetDistance, double targetVelocity, double timeout) {
         this.driveSubsystem = driveSubsystem;
-        this.pidController = new PIDController(PID[0], PID[1], PID[2], 1, 5);
+        this.pidController = new PIDController(Parameters.kVelocityPID[0], Parameters.kVelocityPID[1], Parameters.kVelocityPID[2], 1, 5);
         this.targetVelocity = targetVelocity;
         this.targetDistance = targetDistance;
         this.leftVelocity = 0;
@@ -94,14 +94,15 @@ public class DriveDistanceCommand implements Command {
         tl.addData("kV ", kV);
         tl.addData("PkV ", Parameters.kV);
         tl.addData("targetVelo ", targetVelocity);
-        double kP = 0.1;
-        double kD = 0.05;
+        double kP = Parameters.kVelocityPID[0];
+        double kD = Parameters.kVelocityPID[2];
 
-        //double leftOutput = Math.min(pidController.run(leftVelocity) + kP*leftPositionError + kD*leftErrorDeriv, 1);
-        //double rightOutput =Math.min(pidController.run(rightVelocity) + kP*rightPositionError + kD*rightErrorDeriv, 1);
+        double leftOutput = Math.min(pidController.run(leftVelocity), 1);
+        double rightOutput = Math.min(pidController.run(rightVelocity), 1);
 
-        double leftOutput = Math.min(kV + kS + kP*leftPositionError + kD*leftErrorDeriv, 1);
+        /*double leftOutput = Math.min(kV + kS + kP*leftPositionError + kD*leftErrorDeriv, 1);
         double rightOutput =Math.min(kV + kS + kP*rightPositionError + kD*rightErrorDeriv, 1);
+        (*/
         driveSubsystem.tankDrive(leftOutput, rightOutput);
 
     }

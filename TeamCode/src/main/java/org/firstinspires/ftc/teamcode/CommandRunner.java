@@ -41,7 +41,8 @@ public class CommandRunner {
         try {
             scheduledExecutorService.scheduleAtFixedRate(updateMethod, 0,20, TimeUnit.MILLISECONDS);
             while(!command.isFinished() && opMode.opModeIsActive()) {
-                
+                telemetry.addData("Running Command", "True");
+                telemetry.update();
             }
             scheduledExecutorService.shutdownNow();
 

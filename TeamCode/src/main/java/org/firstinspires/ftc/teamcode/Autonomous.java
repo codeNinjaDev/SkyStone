@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
@@ -39,7 +40,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.vuforia.Vuforia;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.commands.DriveDistanceCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
@@ -71,16 +76,30 @@ public class Autonomous extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        dashboard.updateConfig();
+
+        telemetry = dashboard.getTelemetry();
+        String V_LICENSE = "AVXpNNv/////AAABmepa4M4Lb0Pji1YbsYaCl+8r5OjeMfRao7RA3siS0+MS1SCSgar/W48rh74JxmrcUczMHiI+i8exMdTIZBPGeBGIMgzq3zGckJ9v/5ry7uBCy4Db99U5jbTy4i+5VqGPzEYWhQgtD7t+3VoWWENGQiuawU33tAp4dHWPpe4gCbjF+MgTSp/SRrVZKPw4soYuoCr8JHhUbTiAFWMS4n3+P0Cxr+lxoYu9leKvaf1fiG9nEnb1uGf88N5UnaH5oA3uJ6KGS1ATgzRQIEkrTJElphxQb4zjOK8FyA+ERiVjJ6m7vwvmyokN6Dicm3xwS1cRPy3EBPrXTgM0TdhUWFVx30TqWrBz4KvEhNEnwzoFwHLM";
+
         driveController = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
         double[] PID = {.006, 0, 0.0001};
-        driveFiftyInches = new CommandRunner(this, new DriveDistanceCommand(driveController, PID, 58, 10, 100), telemetry);
+        driveFiftyInches = new CommandRunner(this, new DriveDistanceCommand(driveController, Parameters.targetDistance, Parameters.targetVelocity, 100), telemetry);
 
+        VuforiaLocalizer.Parameters vuforiaParams = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
+        vuforiaParams.vuforiaLicenseKey = V_LICENSE;
+        vuforiaParams.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(vuforiaParams);
+        dashboard.startCameraStream(vuforia, 0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         driveFiftyInches.runCommand();
         runtime.reset();
-        
+        while(opModeIsActive()) {
+        }
+        dashboard.stopCameraStream();
 
     }
 
