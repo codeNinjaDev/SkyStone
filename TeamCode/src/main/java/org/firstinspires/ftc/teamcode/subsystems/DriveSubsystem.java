@@ -165,7 +165,7 @@ public class DriveSubsystem implements Subsystem {
     public double getRightDistance() {
         return (backRightMotor.getCurrentPosition()*Parameters.kInchesPerTick);
     }
-    public void update(Telemetry telemetry) {
+    public void update() {
         // If RT is pressed slow down
         if(driverGamepad.right_trigger > 0.2) {
             MAX_SPEED = .7;
