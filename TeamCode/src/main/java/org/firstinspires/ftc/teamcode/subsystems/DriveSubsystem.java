@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -8,6 +10,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Parameters;
 
 import org.firstinspires.ftc.teamcode.libs.DriveUtils;
@@ -21,12 +25,18 @@ public class DriveSubsystem implements Subsystem {
     private Gamepad driverGamepad;
     double MAX_SPEED = 1;
     private double m_rightSideInvertMultiplier = -1.0;
-
     private Telemetry tl;
     public HardwareMap hardwareMap = null;
 
     public DcMotor backLeftMotor = null;
     public DcMotor backRightMotor = null;
+    // The IMU sensor object
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
 
     public DcMotor frontLeftMotor = null;
     public DcMotor frontRightMotor = null;
@@ -41,6 +51,16 @@ public class DriveSubsystem implements Subsystem {
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -167,15 +187,19 @@ public class DriveSubsystem implements Subsystem {
     }
     public void update() {
         // If RT is pressed slow down
-        if(driverGamepad.right_trigger > 0.2) {
+        if (driverGamepad.right_trigger > 0.2) {
             MAX_SPEED = .7;
         } else {
             MAX_SPEED = 1;
         }
-        arcadeDrive(-driverGamepad.left_stick_y, driverGamepad.right_stick_x);
-        //arcadeDrive(humanControl.getDriverRightJoyX(), humanControl.getDriverLeftJoyY());
-    }
+        if (driverGamepad.right_stick_button) {
+            driveCartesian(driverGamepad.left_stick_x, -driverGamepad.left_stick_y, driverGamepad.right_stick_x, imu.getAngularOrientation().firstAngle);
 
+        } else {
+            driveCartesian(driverGamepad.left_stick_x, -driverGamepad.left_stick_y, driverGamepad.right_stick_x, 0);
+
+        }
+    }
     public void resetEncoders() {
 
         backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
