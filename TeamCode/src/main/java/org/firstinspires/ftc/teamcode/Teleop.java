@@ -32,10 +32,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 
@@ -61,6 +63,7 @@ public class Teleop extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
 
     DriveSubsystem driveSubsystem;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -114,10 +117,8 @@ public class Teleop extends OpMode
         driveSubsystem.update();
 
 
-
         telemetry.addData("gamepad_right_y", gamepad1.right_stick_y);
         telemetry.addData("gamepad_right_x", gamepad1.right_stick_x);
-
 
         telemetry.update();
 

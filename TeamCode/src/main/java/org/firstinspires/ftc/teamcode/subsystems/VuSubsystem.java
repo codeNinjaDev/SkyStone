@@ -28,6 +28,8 @@ public class VuSubsystem implements Subsystem {
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
+    public VectorF translation;
+    public double yaw;
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -66,7 +68,7 @@ public class VuSubsystem implements Subsystem {
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
-    private boolean targetVisible = false;
+    public boolean targetVisible = false;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
@@ -82,6 +84,10 @@ public class VuSubsystem implements Subsystem {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.phoneCamera = phoneCamera;
+
+        yaw = 0;
+        targetVisible = false;
+        translation = null;
     }
 
 
@@ -296,12 +302,13 @@ public class VuSubsystem implements Subsystem {
         // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
             // express position (translation) of robot in inches.
-            VectorF translation = lastLocation.getTranslation();
+            translation = lastLocation.getTranslation();
             telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                     translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
             // express the rotation of the robot in degrees.
             Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            yaw = rotation.thirdAngle;
             telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         }
         else {

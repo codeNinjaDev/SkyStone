@@ -56,13 +56,13 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="PolarTest", group="Autos")  // @Autonomous(...) is the other common choice
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="MecanumTest", group="Autos")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class Autonomous extends LinearOpMode {
+public class MecanumTest extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    //private CommandRunner driveMecanum;
-    private CommandRunner drivePolar;
+    private CommandRunner driveMecanum;
+    //private CommandRunner drivePolar;
 
     DriveSubsystem driveController;
 
@@ -72,15 +72,15 @@ public class Autonomous extends LinearOpMode {
 
         driveController = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
 
-        //driveMecanum = new CommandRunner(this, new MecanumDriveCommand(driveController, 6, 45, 7, telemetry), telemetry);
-        drivePolar = new CommandRunner(this, new DrivePolarCommand(driveController, 6, 45, 7, telemetry), telemetry);
+        driveMecanum = new CommandRunner(this, new MecanumDriveCommand(driveController, 6, 45, 7, telemetry), telemetry);
+        //drivePolar = new CommandRunner(this, new DrivePolarCommand(driveController, 6, 45, 7, telemetry), telemetry);
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        drivePolar.runCommand();
-        //driveMecanum.runCommand();
+        driveMecanum.runCommand();
         sleep(1000);
+        //drivePolar.runCommand();
         runtime.reset();
 
 
