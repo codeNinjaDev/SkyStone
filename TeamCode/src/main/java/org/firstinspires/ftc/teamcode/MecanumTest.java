@@ -42,6 +42,7 @@ import org.firstinspires.ftc.teamcode.commands.DriveDistanceCommand;
 import org.firstinspires.ftc.teamcode.commands.DrivePolarCommand;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -61,25 +62,41 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 public class MecanumTest extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private CommandRunner driveMecanum;
+    private CommandRunner goToFoundation;
+    private CommandRunner pullFoundation;
+    private CommandRunner strafeRight;
+    private CommandRunner strafeDiagonally;
+    private CommandRunner strafeDiagonallyOpposite;
+    private CommandRunner strafeBack;
+    private CommandRunner goToFoundationAgain;
+    private CommandRunner park;
+
+
+
     //private CommandRunner drivePolar;
+
+    VuSubsystem vu;
 
     DriveSubsystem driveController;
 
 
     @Override
     public void runOpMode() {
+        vu = new VuSubsystem(hardwareMap, telemetry, true);
+        driveController = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
 
-        driveController = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
-
-        driveMecanum = new CommandRunner(this, new MecanumDriveCommand(driveController, 6, 45, 7, telemetry), telemetry);
-        //drivePolar = new CommandRunner(this, new DrivePolarCommand(driveController, 6, 45, 7, telemetry), telemetry);
+        goToFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 20, 90, 12, telemetry), telemetry);
+        pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, -20, 90, 12, telemetry), telemetry);
+        strafeRight = new CommandRunner(this, new MecanumDriveCommand(driveController, 60, 0, 12, telemetry), telemetry);
+        strafeDiagonally = new CommandRunner(this, new MecanumDriveCommand(driveController, 60, 45, 12, telemetry), telemetry);
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        driveMecanum.runCommand();
-        sleep(1000);
+        goToFoundation.runCommand();
+        pullFoundation.runCommand();
+        strafeRight.runCommand();
+        strafeDiagonally.runCommand();
         //drivePolar.runCommand();
         runtime.reset();
 

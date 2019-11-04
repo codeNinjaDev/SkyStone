@@ -42,6 +42,7 @@ import org.firstinspires.ftc.teamcode.commands.DriveDistanceCommand;
 import org.firstinspires.ftc.teamcode.commands.DrivePolarCommand;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -65,12 +66,12 @@ public class Autonomous extends LinearOpMode {
     private CommandRunner drivePolar;
 
     DriveSubsystem driveController;
-
+    VuSubsystem vu;
 
     @Override
     public void runOpMode() {
-
-        driveController = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
+        vu = new VuSubsystem(hardwareMap, telemetry, true);
+        driveController = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
 
         //driveMecanum = new CommandRunner(this, new MecanumDriveCommand(driveController, 6, 45, 7, telemetry), telemetry);
         drivePolar = new CommandRunner(this, new DrivePolarCommand(driveController, 6, 45, 7, telemetry), telemetry);

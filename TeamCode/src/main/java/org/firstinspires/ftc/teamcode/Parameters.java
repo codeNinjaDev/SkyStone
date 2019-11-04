@@ -8,7 +8,7 @@ public class Parameters {
     public static double kVIntercept = 0.449268; //Units are V
     public static double[] kVelocityPID = {0, 0, 0};
     public static double kWheelDiameter = 3.54; //Units are inches
-    public static double kTicksPerRev = 288; //Hex Core Motor
+    public static double kTicksPerRev = 537.6; //HD HEX 20:1
     public static double kInchesPerTick = (kWheelDiameter * Math.PI) / kTicksPerRev;
     public static double kTickPerInches = kTicksPerRev / (kWheelDiameter * Math.PI);
 

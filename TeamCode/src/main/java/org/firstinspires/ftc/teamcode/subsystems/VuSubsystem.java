@@ -29,7 +29,7 @@ public class VuSubsystem implements Subsystem {
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
     public VectorF translation;
-    public double yaw;
+    public double yaw, distance, horizontal_distance;
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -84,7 +84,8 @@ public class VuSubsystem implements Subsystem {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.phoneCamera = phoneCamera;
-
+        distance = 0;
+        horizontal_distance = 0;
         yaw = 0;
         targetVisible = false;
         translation = null;
@@ -285,6 +286,10 @@ public class VuSubsystem implements Subsystem {
 // check all the trackable targets to see which one (if any) is visible.
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
+            if(trackable.getName() != "Stone Target") {
+                continue;
+            }
+
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 telemetry.addData("Visible Target", trackable.getName());
                 targetVisible = true;
@@ -303,19 +308,31 @@ public class VuSubsystem implements Subsystem {
         if (targetVisible) {
             // express position (translation) of robot in inches.
             translation = lastLocation.getTranslation();
-            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+            //telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+            //       translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
             // express the rotation of the robot in degrees.
             Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            distance = translation.get(0) / mmPerInch;
+            horizontal_distance =  translation.get(1) / mmPerInch;
             yaw = rotation.thirdAngle;
-            telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+
+            //telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         }
         else {
             telemetry.addData("Visible Target", "none");
         }
         telemetry.update();
     }
+
+    public double getYaw() {
+        return yaw;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
 
     @Override
     public void stop() {

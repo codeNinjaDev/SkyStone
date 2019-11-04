@@ -20,10 +20,10 @@ public class MecanumDriveCommand implements Command {
     public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double timeout, Telemetry telemetry) {
         this.driveSubsystem = driveSubsystem;
         this.targetDistance = targetDistance;
-        this.theta = theta;
+        this.theta = -theta;
 
-        this.y_distance = Math.sin(Math.toRadians(theta)) * targetDistance;
-        this.x_distance = Math.cos(Math.toRadians(theta)) * targetDistance;
+        this.y_distance = Math.sin(Math.toRadians(-theta)) * targetDistance;
+        this.x_distance = Math.cos(Math.toRadians(-theta)) * targetDistance;
         this.timeout = timeout;
 
         wheelTargets = new ArrayList<Double>();
@@ -32,6 +32,12 @@ public class MecanumDriveCommand implements Command {
         wheelTargets.add(y_distance - x_distance); // - .366 (3.66)
         wheelTargets.add(y_distance - x_distance); // - .366 (3.66)
         wheelTargets.add(y_distance + x_distance); // + 1.366 (13.66)
+
+        telemetry.addData("BackLeftWheel Desired: ", wheelTargets.get(0));
+        telemetry.addData("FrontLeftWheel Desired: ", wheelTargets.get(1));
+        telemetry.addData("BackRightWheel Desired: ", wheelTargets.get(2));
+        telemetry.addData("FrontRightWheel Desired: ", wheelTargets.get(3));
+
         timer = new ElapsedTime();
 
     }
@@ -39,24 +45,34 @@ public class MecanumDriveCommand implements Command {
     /*** Configures everything ***/
     public void init() {
         driveSubsystem.robotDrive.resetEncoders();
-        driveSubsystem.robotDrive.backLeftMotor.setTargetPosition((int) (wheelTargets.get(0) * Parameters.kTickPerInches));
-        driveSubsystem.robotDrive.frontLeftMotor.setTargetPosition((int) (wheelTargets.get(1) * Parameters.kTickPerInches));
-        driveSubsystem.robotDrive.backRightMotor.setTargetPosition((int) (wheelTargets.get(2) * Parameters.kTickPerInches));
-        driveSubsystem.robotDrive.frontRightMotor.setTargetPosition((int) (wheelTargets.get(3) * Parameters.kTickPerInches));
+        driveSubsystem.robotDrive.setDistance(driveSubsystem.robotDrive.backLeftMotor, wheelTargets.get(0));
+        driveSubsystem.robotDrive.setDistance(driveSubsystem.robotDrive.frontLeftMotor, wheelTargets.get(1));
+        driveSubsystem.robotDrive.setDistance(driveSubsystem.robotDrive.backRightMotor, wheelTargets.get(2));
+        driveSubsystem.robotDrive.setDistance(driveSubsystem.robotDrive.frontRightMotor, wheelTargets.get(3));
         driveSubsystem.robotDrive.positionEncoders();
 
-        driveSubsystem.robotDrive.frontRightMotor.setPower(0.6);
-        driveSubsystem.robotDrive.frontLeftMotor.setPower(0.6);
-        driveSubsystem.robotDrive.backLeftMotor.setPower(0.6);
-        driveSubsystem.robotDrive.backRightMotor.setPower(0.6);
+
     }
     /*** Runs in a loop ***/
     public void update(Telemetry tl) {
 
+        driveSubsystem.robotDrive.frontRightMotor.setPower(0.7);
+        driveSubsystem.robotDrive.frontLeftMotor.setPower(0.7);
+        driveSubsystem.robotDrive.backLeftMotor.setPower(0.7);
+        driveSubsystem.robotDrive.backRightMotor.setPower(0.7);
+        tl.addData("BackLeftWheel Desired: ", wheelTargets.get(0));
+        tl.addData("FrontLeftWheel Desired: ", wheelTargets.get(1));
+        tl.addData("BackRightWheel Desired: ", wheelTargets.get(2));
+        tl.addData("FrontRightWheel Desired: ", wheelTargets.get(3));
+        tl.addData("BackLeftWheel Direction: ", driveSubsystem.robotDrive.backLeftMotor.getDirection());
+        tl.addData("BackRightWheel Direction: ", driveSubsystem.robotDrive.backRightMotor.getDirection());
+        tl.addData("frontLeftWheel Direction: ", driveSubsystem.robotDrive.frontLeftMotor.getDirection());
+        tl.addData("FrontRightWheel Direction: ", driveSubsystem.robotDrive.frontRightMotor.getDirection());
     }
+
     /*** Checks if command is finished ***/
     public boolean isFinished() {
-        boolean backLeft = (Math.abs((driveSubsystem.robotDrive.backLeftMotor.getCurrentPosition()
+        /*boolean backLeft = (Math.abs((driveSubsystem.robotDrive.backLeftMotor.getCurrentPosition()
                 * (Parameters.kInchesPerTick) - wheelTargets.get(0))) < 1);
         boolean frontLeft = (Math.abs((driveSubsystem.robotDrive.frontLeftMotor.getCurrentPosition()
                 * (Parameters.kInchesPerTick) - wheelTargets.get(1))) < 1);
@@ -64,7 +80,12 @@ public class MecanumDriveCommand implements Command {
                 * (Parameters.kInchesPerTick) - wheelTargets.get(2))) < 1);
         boolean frontRight = (Math.abs((driveSubsystem.robotDrive.frontLeftMotor.getCurrentPosition()
                 * (Parameters.kInchesPerTick) - wheelTargets.get(3))) < 1);
-        boolean distanceReached = backLeft && frontLeft && backRight && frontRight;
+        boolean distanceReached = backLeft && frontLeft && backRight && frontRight;*/
+        boolean distanceReached = !driveSubsystem.robotDrive.backLeftMotor.isBusy()
+                && !driveSubsystem.robotDrive.frontLeftMotor.isBusy()
+                && !driveSubsystem.robotDrive.backRightMotor.isBusy()
+                && !driveSubsystem.robotDrive.frontRightMotor.isBusy();
+
         boolean timeoutReached = timer.seconds() >= timeout;
 
         return distanceReached || timeoutReached;

@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Parameters;
 
 import org.firstinspires.ftc.teamcode.libs.DriveUtils;
+import org.firstinspires.ftc.teamcode.libs.PIDController;
 import org.firstinspires.ftc.teamcode.libs.RobotDrive;
 import org.firstinspires.ftc.teamcode.libs.Vector2D;
 
@@ -24,10 +25,11 @@ import org.firstinspires.ftc.teamcode.libs.Vector2D;
 
 public class DriveSubsystem implements Subsystem {
     private Gamepad driverGamepad;
+    private PIDController vuController;
     double MAX_SPEED = 1;
     private Telemetry tl;
     public HardwareMap hardwareMap = null;
-
+    VuSubsystem vu;
     //Drive Variables
     double drive;
     double strafe;
@@ -48,7 +50,7 @@ public class DriveSubsystem implements Subsystem {
     boolean buttonState = false;
 
     // The IMU sensor object
-    BNO055IMU imu;
+    public BNO055IMU imu;
 
     // State used for updating telemetry
     Orientation angles;
@@ -57,11 +59,16 @@ public class DriveSubsystem implements Subsystem {
     ElapsedTime pidTimer;
     public RobotDrive robotDrive;
     //TODO initialize frontMOtors
-    public DriveSubsystem(HardwareMap hardwareMap, Gamepad driverGamepad, Telemetry tl) {
+    public DriveSubsystem(HardwareMap hardwareMap, VuSubsystem vu, Gamepad driverGamepad, Telemetry tl) {
         pidTimer = new ElapsedTime();
         this.driverGamepad = driverGamepad;
         this.tl = tl;
         this.hardwareMap = hardwareMap;
+        this.vu = vu;
+        vuController = new PIDController(.1, 0, .05, .2, 5);
+        vuController.setSetpoint(0);
+
+
         robotDrive = new RobotDrive(hardwareMap, "rearLeft",
                 "frontLeft", "rearRight", "frontRight", false);
 
@@ -83,6 +90,8 @@ public class DriveSubsystem implements Subsystem {
     }
 
     public void update() {
+        vu.update();
+
         //speed
         if(driverGamepad.x){
             MAX_SPEED = 0.5;
@@ -101,11 +110,9 @@ public class DriveSubsystem implements Subsystem {
         }
 
         // If RT is pressed slow down
-        if (driverGamepad.right_trigger > 0) {
-            strafe = (double) driverGamepad.right_trigger;
-        } else if(driverGamepad.left_trigger > 0) {
-            strafe = (double) -driverGamepad.left_trigger;
-        } else {
+
+        strafe = driverGamepad.left_stick_x;
+        if(Math.abs(strafe) < 0.2 || (driverGamepad.left_trigger > 0)) {
             strafe = 0;
         }
         if (driverGamepad.right_bumper) {
@@ -118,7 +125,10 @@ public class DriveSubsystem implements Subsystem {
             rotate = driverGamepad.right_stick_x * direction;
 
             //Mecanum direction calculation
-
+            if(driverGamepad.y && vu.targetVisible) {
+                rotate = vuController.run(vu.getYaw());
+                direction = -1;
+            }
             if(direction == -1) {
                 // If direction is reversed
                 front_left = drive - strafe + rotate;
@@ -134,6 +144,7 @@ public class DriveSubsystem implements Subsystem {
             }
 //-----------------------------------Gamepad 1 Start------------------------------------------------
 
+
             robotDrive.frontLeftMotor.setPower(robotDrive.limit(front_left)* MAX_SPEED);
             robotDrive.backLeftMotor.setPower(robotDrive.limit(rear_left)* MAX_SPEED);
             robotDrive.frontRightMotor.setPower(robotDrive.limit(front_right)* MAX_SPEED);
@@ -142,7 +153,9 @@ public class DriveSubsystem implements Subsystem {
         }
     }
 
-
+    public void arcadeDrive(double forward, double rotate, boolean squareInputs) {
+        robotDrive.arcadeDrive(forward, rotate, squareInputs);
+    }
 
 
     public void reset() {

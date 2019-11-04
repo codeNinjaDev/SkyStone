@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.libs;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.Parameters;
 
@@ -23,17 +24,12 @@ public class RobotDrive {
         frontRightMotor = hardwareMap.dcMotor.get(frontRightName);
         this.hardwareMap = hardwareMap;
 
-        if(reverse) {
-            frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-            backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-            frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-            backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        } else {
-            frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-            backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-            frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-            backRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        }
+
+        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
+
 
 
     }
@@ -113,7 +109,6 @@ public class RobotDrive {
         backLeftMotor.setPower(wheelSpeeds[2]);
         backRightMotor.setPower(wheelSpeeds[0]  * m_rightSideInvertMultiplier);
 
-
     }
 
     /**
@@ -180,6 +175,29 @@ public class RobotDrive {
         frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void setDistance(DcMotor motor, double distance) {
+        motor.setTargetPosition((int) (distance * Parameters.kTickPerInches));
+    }
+
+    public void setLeftRightCornertDistance(double distance) {
+        backLeftMotor.setTargetPosition((int) (distance * Parameters.kTickPerInches));
+        frontRightMotor.setTargetPosition((int) (distance * Parameters.kTickPerInches));
+    }
+
+    public void setRightLeftCornertDistance(double distance) {
+        frontLeftMotor.setTargetPosition((int) (distance * Parameters.kTickPerInches));
+        backRightMotor.setTargetPosition((int) (distance * Parameters.kTickPerInches));
+    }
+
+    public void setLeftRightCornertPower(double speed) {
+        backLeftMotor.setPower(speed);
+        frontRightMotor.setPower(speed);
+    }
+
+    public void setRightLeftCornertPower(double speed) {
+        frontLeftMotor.setPower(speed);
+        backRightMotor.setPower(speed);
+    }
 
     public void stopDriving() {
         setLeftDrive(0);

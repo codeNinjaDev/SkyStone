@@ -38,7 +38,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.libs.PIDController;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 
 /**
@@ -61,9 +64,11 @@ public class Teleop extends OpMode
 {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
+    VuSubsystem vu;
+    PIDController pidController;
 
     DriveSubsystem driveSubsystem;
-
+    IntakeSubsystem intake;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -72,9 +77,13 @@ public class Teleop extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
+        vu = new VuSubsystem(hardwareMap, telemetry, true);
 
-        driveSubsystem = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
-
+        driveSubsystem = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
+        intake = new IntakeSubsystem(hardwareMap, gamepad1);
+        pidController = new PIDController(0.001, 0.00, 0.00, .4, 5);
+        pidController.setSetpoint(0);
+        vu.init();
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
@@ -111,17 +120,13 @@ public class Teleop extends OpMode
      */
     @Override
     public void loop() {
+        telemetry.addData("Target Yaw:", vu.getYaw());
+        telemetry.addData("Target Visible:", vu.targetVisible);
 
-
-
+        telemetry.addData("Target Distance:", vu.getDistance());
         driveSubsystem.update();
 
-
-        telemetry.addData("gamepad_right_y", gamepad1.right_stick_y);
-        telemetry.addData("gamepad_right_x", gamepad1.right_stick_x);
-
-        telemetry.update();
-
+        intake.update();
 
     }
 
