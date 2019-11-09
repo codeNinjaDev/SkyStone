@@ -14,7 +14,7 @@ public class MecanumDriveCommand implements Command {
     private double y_distance, x_distance;
     private ArrayList<Double> wheelTargets;
     private ElapsedTime timer;
-    private double timeout;
+    private double timeout, speed;
     Telemetry telemetry;
 
     public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double timeout, Telemetry telemetry) {
@@ -39,11 +39,37 @@ public class MecanumDriveCommand implements Command {
         telemetry.addData("FrontRightWheel Desired: ", wheelTargets.get(3));
 
         timer = new ElapsedTime();
-
+        this.speed = 0.6;
     }
 
+    public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double speed, double timeout, Telemetry telemetry) {
+        this.driveSubsystem = driveSubsystem;
+        this.targetDistance = targetDistance;
+        this.theta = -theta;
+
+        this.y_distance = Math.sin(Math.toRadians(-theta)) * targetDistance;
+        this.x_distance = Math.cos(Math.toRadians(-theta)) * targetDistance;
+        this.timeout = timeout;
+        this.telemetry = telemetry;
+        wheelTargets = new ArrayList<Double>();
+
+        wheelTargets.add(y_distance + x_distance); // + 1.366 (13.66)
+        wheelTargets.add(y_distance - x_distance); // - .366 (3.66)
+        wheelTargets.add(y_distance - x_distance); // - .366 (3.66)
+        wheelTargets.add(y_distance + x_distance); // + 1.366 (13.66)
+
+        telemetry.addData("BackLeftWheel Desired: ", wheelTargets.get(0));
+        telemetry.addData("FrontLeftWheel Desired: ", wheelTargets.get(1));
+        telemetry.addData("BackRightWheel Desired: ", wheelTargets.get(2));
+        telemetry.addData("FrontRightWheel Desired: ", wheelTargets.get(3));
+
+        timer = new ElapsedTime();
+        this.speed = speed;
+    }
     /*** Configures everything ***/
     public void init() {
+        timer.reset();
+        timer.startTime();
         driveSubsystem.robotDrive.resetEncoders();
         driveSubsystem.robotDrive.setDistance(driveSubsystem.robotDrive.backLeftMotor, wheelTargets.get(0));
         driveSubsystem.robotDrive.setDistance(driveSubsystem.robotDrive.frontLeftMotor, wheelTargets.get(1));
@@ -56,10 +82,10 @@ public class MecanumDriveCommand implements Command {
     /*** Runs in a loop ***/
     public void update(Telemetry tl) {
 
-        driveSubsystem.robotDrive.frontRightMotor.setPower(0.6);
-        driveSubsystem.robotDrive.frontLeftMotor.setPower(.6);
-        driveSubsystem.robotDrive.backLeftMotor.setPower(0.6);
-        driveSubsystem.robotDrive.backRightMotor.setPower(0.6);
+        driveSubsystem.robotDrive.frontRightMotor.setPower(speed);
+        driveSubsystem.robotDrive.frontLeftMotor.setPower(speed);
+        driveSubsystem.robotDrive.backLeftMotor.setPower(speed);
+        driveSubsystem.robotDrive.backRightMotor.setPower(speed);
 
         tl.addData("Circumerefence: ", Parameters.kWheelDiameter * Math.PI);
         tl.addData("kTicksPerInches: ", Parameters.kTickPerInches);

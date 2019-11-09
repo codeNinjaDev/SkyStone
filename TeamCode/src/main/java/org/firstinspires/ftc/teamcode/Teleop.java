@@ -32,15 +32,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.libs.PIDController;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 
@@ -68,7 +66,7 @@ public class Teleop extends OpMode
     PIDController pidController;
 
     DriveSubsystem driveSubsystem;
-    IntakeSubsystem intake;
+    ArmSubsystem intake;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -80,7 +78,7 @@ public class Teleop extends OpMode
         vu = new VuSubsystem(hardwareMap, telemetry, true);
 
         driveSubsystem = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
-        intake = new IntakeSubsystem(hardwareMap, gamepad1);
+        intake = new ArmSubsystem(hardwareMap, gamepad1);
         pidController = new PIDController(0.001, 0.00, 0.00, .4, 5);
         pidController.setSetpoint(0);
         vu.init();

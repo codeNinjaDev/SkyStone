@@ -66,12 +66,13 @@ public class MecanumTest extends LinearOpMode {
     private CommandRunner turnTowardBridge;
     private CommandRunner goToBlocks;
     private CommandRunner goToFirstSkyStone;
+    private CommandRunner lineUpBetter;
     private CommandRunner getFirstSkystone;
-    private CommandRunner strafeLeftWithSkystone1;
+    private CommandRunner strafeAwayWithSkystone1;
     private CommandRunner driveBackToBase;
     private CommandRunner goToSecondSkystone;
     private CommandRunner getSecondSkystone;
-    private CommandRunner strafeLeftWithSkystone2;
+    private CommandRunner strafeAwayWithSkystone2;
 
     private CommandRunner park;
 
@@ -90,17 +91,17 @@ public class MecanumTest extends LinearOpMode {
         driveController = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
         //arms = new SkystoneArm(hardwareMap);
         driveController.reset();
-        goToFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, -20, 90, 5, telemetry), telemetry);
-        pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 90, 10, telemetry), telemetry);
+        goToFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, -30, 90, 5, telemetry), telemetry);
+        pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 28, 90, 10, telemetry), telemetry);
         strafeOut = new CommandRunner(this, new MecanumDriveCommand(driveController, -33, 0, 10, telemetry), telemetry);
-        getOffTheWall = new CommandRunner(this, new MecanumDriveCommand(driveController, -18, 90, 10, telemetry), telemetry);
+        getOffTheWall = new CommandRunner(this, new MecanumDriveCommand(driveController, -20, 90, 10, telemetry), telemetry);
 
         turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, -87, 7), telemetry);
-        goToBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, 25, 90, 10, telemetry), telemetry);
+        goToBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, 33, 90, 10, telemetry), telemetry);
 
-        goToFirstSkyStone = new CommandRunner(this, new TrackSkyStoneCommand(driveController, vu, 8, telemetry), telemetry);
+        goToFirstSkyStone = new CommandRunner(this, new TrackSkyStoneCommand(driveController, vu, 20, telemetry), telemetry);
         getFirstSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, -12, 0, 10, telemetry), telemetry);
-        strafeLeftWithSkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, -12, 0, 10, telemetry), telemetry);
+        strafeAwayWithSkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 0, 10, telemetry), telemetry);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -122,26 +123,30 @@ public class MecanumTest extends LinearOpMode {
         telemetry.addData("TargetVisibility, ", vu.targetVisible);
         telemetry.addData("horiz_distance, ", vu.horizontal_distance);
         telemetry.update();
-        sleep(10000);
-        /*double firstSkystoneDistance = driveController.robotDrive.getAverageDistance();
+        double firstSkystoneDistance = driveController.robotDrive.getAverageDistance() + 33;
+        firstSkystoneDistance +=  vu.horizontal_distance;
+        lineUpBetter = new CommandRunner(this, new MecanumDriveCommand(driveController, vu.horizontal_distance, 90, 0.3,4, telemetry), telemetry);
+        sleep(50);
+        lineUpBetter.runCommand();
+        sleep(50);
         getFirstSkystone.runCommand();
         //arms.moveLeftArmDown();
-        sleep(500);
-        strafeLeftWithSkystone1.runCommand();
+        sleep(5000);
+        strafeAwayWithSkystone1.runCommand();
         //arms.moveLeftArmUp();
         sleep(500);
         driveBackToBase = new CommandRunner(this, new MecanumDriveCommand(driveController, -firstSkystoneDistance, 90, 4, telemetry), telemetry);
         driveBackToBase.runCommand();
         goToSecondSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, firstSkystoneDistance + 16, 90, 4, telemetry), telemetry);
         goToSecondSkystone.runCommand();
-        getSecondSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 0, 4, telemetry), telemetry);
+        getSecondSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, -12, 0, 4, telemetry), telemetry);
         getSecondSkystone.runCommand();
         //arms.moveLeftArmDown();
         sleep(500);
-        strafeLeftWithSkystone2 = new CommandRunner(this, new MecanumDriveCommand(driveController, -12, 0, 4, telemetry), telemetry);
-        strafeLeftWithSkystone2.runCommand();
+        strafeAwayWithSkystone2 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 0, 4, telemetry), telemetry);
+        strafeAwayWithSkystone2.runCommand();
         park = new CommandRunner(this, new MecanumDriveCommand(driveController, -(firstSkystoneDistance + 16), 90, 4, telemetry), telemetry);
-        park.runCommand();*/
+        park.runCommand();
         //arms.moveLeftArmUp();
         runtime.reset();
 

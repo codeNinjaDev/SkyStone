@@ -23,6 +23,7 @@ public class TurnGyroCommand implements Command {
 
     public void init() {
         driveSubsystem.reset();
+        timer.reset();
         timer.startTime();
     }
 
