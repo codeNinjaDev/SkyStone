@@ -43,7 +43,7 @@ public class PIDController {
         aff = ff;
     }
     public boolean onTarget() {
-        currentError = setpoint -feedback;
+        currentError = setpoint - feedback;
         double percent = percentTolerance * .01;
         if(Math.abs(currentError) < setpoint*percent)
             return true;

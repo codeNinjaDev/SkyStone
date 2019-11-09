@@ -48,7 +48,7 @@ public class DriveSubsystem implements Subsystem {
     int direction = 1;
     boolean toggleState = false;
     boolean buttonState = false;
-
+    double yaw;
     // The IMU sensor object
     public BNO055IMU imu;
 
@@ -65,6 +65,7 @@ public class DriveSubsystem implements Subsystem {
         this.tl = tl;
         this.hardwareMap = hardwareMap;
         this.vu = vu;
+        this.yaw = Double.MAX_VALUE;
         vuController = new PIDController(.1, 0, .05, .2, 5);
         vuController.setSetpoint(0);
 
@@ -89,6 +90,9 @@ public class DriveSubsystem implements Subsystem {
 
     }
 
+    public double getHeading() {
+        return -imu.getAngularOrientation().firstAngle;
+    }
     public void update() {
         vu.update();
 
@@ -159,6 +163,7 @@ public class DriveSubsystem implements Subsystem {
 
 
     public void reset() {
+        imu.getAngularOrientation().firstAngle = 0;
         robotDrive.resetEncoders();
     }
 

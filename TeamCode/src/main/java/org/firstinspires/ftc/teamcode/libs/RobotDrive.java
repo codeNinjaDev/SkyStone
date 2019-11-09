@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.libs;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -9,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Parameters;
 
 public class RobotDrive {
     public HardwareMap hardwareMap;
-    public DcMotor backLeftMotor, frontLeftMotor, backRightMotor, frontRightMotor;
+    public DcMotorEx backLeftMotor, frontLeftMotor, backRightMotor, frontRightMotor;
     private double m_rightSideInvertMultiplier = -1.0;
 
     double[] wheels = new double[4];
@@ -18,10 +20,10 @@ public class RobotDrive {
      */
     public RobotDrive(HardwareMap hardwareMap, String backLeftName, String frontLeftName,
                       String backRightName, String frontRightName, boolean reverse) {
-        backLeftMotor = hardwareMap.dcMotor.get(backLeftName);
-        frontLeftMotor = hardwareMap.dcMotor.get(frontLeftName);
-        backRightMotor = hardwareMap.dcMotor.get(backRightName);
-        frontRightMotor = hardwareMap.dcMotor.get(frontRightName);
+        backLeftMotor = (DcMotorEx) hardwareMap.dcMotor.get(backLeftName);
+        frontLeftMotor = (DcMotorEx) hardwareMap.dcMotor.get(frontLeftName);
+        backRightMotor = (DcMotorEx) hardwareMap.dcMotor.get(backRightName);
+        frontRightMotor =(DcMotorEx) hardwareMap.dcMotor.get(frontRightName);
         this.hardwareMap = hardwareMap;
 
 
@@ -30,6 +32,20 @@ public class RobotDrive {
         frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
+        backLeftMotor.setTargetPositionTolerance(50);
+        backRightMotor.setTargetPositionTolerance(50);
+        frontLeftMotor.setTargetPositionTolerance(50);
+        frontRightMotor.setTargetPositionTolerance(50);
+
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        /*backRightMotor.getController().setMotorTargetPosition(0, 50);
+        frontRightMotor.getController().setMotorTargetPosition(1, 50);
+        backLeftMotor.getController().setMotorTargetPosition(2, 50);
+        frontLeftMotor.getController().setMotorTargetPosition(3, 50);*/
 
 
     }
@@ -53,7 +69,11 @@ public class RobotDrive {
         if(squareInputs) {
             setLeftDrive(Math.abs(left) * left);
             setRightDrive(Math.abs(right) * right);
+        } else {
+            setLeftDrive(left);
+            setRightDrive(right);
         }
+
     }
 
     public void tankDrive(double left, double right) {
@@ -129,12 +149,17 @@ public class RobotDrive {
     }
 
     public void setLeftDrive(double speed) {
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftMotor.setPower(speed);
         backLeftMotor.setPower(speed);
     }
 
 
     public void setRightDrive(double speed) {
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         frontRightMotor.setPower(speed);
         backRightMotor.setPower(speed);
     }
@@ -177,6 +202,8 @@ public class RobotDrive {
 
     public void setDistance(DcMotor motor, double distance) {
         motor.setTargetPosition((int) (distance * Parameters.kTickPerInches));
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 
     public void setLeftRightCornertDistance(double distance) {

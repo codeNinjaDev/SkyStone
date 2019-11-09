@@ -84,6 +84,7 @@ public class Teleop extends OpMode
         pidController = new PIDController(0.001, 0.00, 0.00, .4, 5);
         pidController.setSetpoint(0);
         vu.init();
+        driveSubsystem.stop();
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).

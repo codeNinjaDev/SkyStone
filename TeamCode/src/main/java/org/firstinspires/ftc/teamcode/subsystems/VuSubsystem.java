@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Parameters;
+import org.firstinspires.ftc.teamcode.commands.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class VuSubsystem implements Subsystem {
 
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = VuforiaLocalizer.CameraDirection.FRONT;
+    private static final boolean PHONE_IS_PORTRAIT = true;
 
     public VectorF translation;
     public double yaw, distance, horizontal_distance;
@@ -84,9 +85,9 @@ public class VuSubsystem implements Subsystem {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.phoneCamera = phoneCamera;
-        distance = 0;
-        horizontal_distance = 0;
-        yaw = 0;
+        distance = Double.MAX_VALUE;
+        horizontal_distance = Double.MAX_VALUE;
+        yaw = Double.MAX_VALUE;
         targetVisible = false;
         translation = null;
     }
@@ -296,7 +297,7 @@ public class VuSubsystem implements Subsystem {
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
@@ -320,6 +321,9 @@ public class VuSubsystem implements Subsystem {
             //telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         }
         else {
+            distance = Double.MAX_VALUE;
+            horizontal_distance = Double.MAX_VALUE;
+            yaw = Double.MAX_VALUE;
             telemetry.addData("Visible Target", "none");
         }
         telemetry.update();

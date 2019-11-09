@@ -74,12 +74,12 @@ public class Autonomous extends LinearOpMode {
         driveController = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
 
         //driveMecanum = new CommandRunner(this, new MecanumDriveCommand(driveController, 6, 45, 7, telemetry), telemetry);
-        drivePolar = new CommandRunner(this, new DrivePolarCommand(driveController, 6, 45, 7, telemetry), telemetry);
+        //drivePolar = new CommandRunner(this, new DrivePolarCommand(driveController, 6, 45, 7, telemetry), telemetry);
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        drivePolar.runCommand();
+        //drivePolar.runCommand();
         //driveMecanum.runCommand();
         sleep(1000);
         runtime.reset();
