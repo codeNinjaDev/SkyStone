@@ -78,7 +78,7 @@ public class Teleop extends OpMode
         vu = new VuSubsystem(hardwareMap, telemetry, true);
 
         driveSubsystem = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
-        intake = new ArmSubsystem(hardwareMap, gamepad1);
+        intake = new ArmSubsystem(gamepad1, hardwareMap);
         pidController = new PIDController(0.001, 0.00, 0.00, .4, 5);
         pidController.setSetpoint(0);
         vu.init();

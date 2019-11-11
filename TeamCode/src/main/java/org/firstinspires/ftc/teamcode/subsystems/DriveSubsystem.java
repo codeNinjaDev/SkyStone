@@ -148,6 +148,10 @@ public class DriveSubsystem implements Subsystem {
             }
 //-----------------------------------Gamepad 1 Start------------------------------------------------
 
+            robotDrive.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robotDrive.backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robotDrive.frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robotDrive.backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             robotDrive.frontLeftMotor.setPower(robotDrive.limit(front_left)* MAX_SPEED);
             robotDrive.backLeftMotor.setPower(robotDrive.limit(rear_left)* MAX_SPEED);
