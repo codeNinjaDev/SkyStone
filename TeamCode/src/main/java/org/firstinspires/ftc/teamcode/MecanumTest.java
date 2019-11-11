@@ -88,7 +88,7 @@ public class MecanumTest extends LinearOpMode {
     public void runOpMode() {
         vu = new VuSubsystem(hardwareMap, telemetry, true);
         vu.init();
-        driveController = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
+        driveController = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
         //arms = new SkystoneArm(hardwareMap);
         driveController.reset();
         goToFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, -30, 90, 5, telemetry), telemetry);

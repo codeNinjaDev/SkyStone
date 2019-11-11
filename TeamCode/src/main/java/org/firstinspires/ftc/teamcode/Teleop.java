@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.libs.PIDController;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 
@@ -62,9 +63,7 @@ public class Teleop extends OpMode
 {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    VuSubsystem vu;
-    PIDController pidController;
-
+    EndgameSubsystem endgameSubsystem;
     DriveSubsystem driveSubsystem;
     ArmSubsystem intake;
 
@@ -75,14 +74,12 @@ public class Teleop extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        vu = new VuSubsystem(hardwareMap, telemetry, true);
 
-        driveSubsystem = new DriveSubsystem(hardwareMap, vu, gamepad1, telemetry);
+        driveSubsystem = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
         intake = new ArmSubsystem(gamepad1, hardwareMap);
-        pidController = new PIDController(0.001, 0.00, 0.00, .4, 5);
-        pidController.setSetpoint(0);
-        vu.init();
-        driveSubsystem.stop();
+        endgameSubsystem = new EndgameSubsystem(gamepad1, hardwareMap);
+
+        stop();
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
@@ -110,6 +107,7 @@ public class Teleop extends OpMode
     @Override
     public void start() {
         runtime.reset();
+        driveSubsystem.stop();
 
 
     }
@@ -119,14 +117,11 @@ public class Teleop extends OpMode
      */
     @Override
     public void loop() {
-        telemetry.addData("Target Yaw:", vu.getYaw());
-        telemetry.addData("Target Visible:", vu.targetVisible);
 
-        telemetry.addData("Target Distance:", vu.getDistance());
         driveSubsystem.update();
-
+        endgameSubsystem.update();
         intake.update();
-
+        telemetry.update();
     }
 
     /*

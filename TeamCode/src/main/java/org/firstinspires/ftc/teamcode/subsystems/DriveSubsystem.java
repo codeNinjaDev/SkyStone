@@ -29,7 +29,7 @@ public class DriveSubsystem implements Subsystem {
     double MAX_SPEED = 1;
     private Telemetry tl;
     public HardwareMap hardwareMap = null;
-    VuSubsystem vu;
+
     //Drive Variables
     double drive;
     double strafe;
@@ -59,12 +59,11 @@ public class DriveSubsystem implements Subsystem {
     ElapsedTime pidTimer;
     public RobotDrive robotDrive;
     //TODO initialize frontMOtors
-    public DriveSubsystem(HardwareMap hardwareMap, VuSubsystem vu, Gamepad driverGamepad, Telemetry tl) {
+    public DriveSubsystem(HardwareMap hardwareMap, Gamepad driverGamepad, Telemetry tl) {
         pidTimer = new ElapsedTime();
         this.driverGamepad = driverGamepad;
         this.tl = tl;
         this.hardwareMap = hardwareMap;
-        this.vu = vu;
         this.yaw = Double.MAX_VALUE;
         vuController = new PIDController(.1, 0, .05, .2, 5);
         vuController.setSetpoint(0);
@@ -94,7 +93,6 @@ public class DriveSubsystem implements Subsystem {
         return -imu.getAngularOrientation().firstAngle;
     }
     public void update() {
-        vu.update();
 
         //speed
         if(driverGamepad.x){
@@ -103,15 +101,6 @@ public class DriveSubsystem implements Subsystem {
         else {
             MAX_SPEED = 1;
         }
-        //direction
-        if(driverGamepad.left_bumper && !buttonState){
-            toggleState = !toggleState;
-            direction = -direction;
-            buttonState = true;
-        }
-        else if(!driverGamepad.left_bumper && buttonState){
-            buttonState = false;
-        }
 
         // If RT is pressed slow down
 
@@ -119,46 +108,33 @@ public class DriveSubsystem implements Subsystem {
         if(Math.abs(strafe) < 0.2 || (driverGamepad.left_trigger > 0)) {
             strafe = 0;
         }
-        if (driverGamepad.right_bumper) {
-            robotDrive.driveCartesian(driverGamepad.right_stick_x * MAX_SPEED, -driverGamepad.left_stick_y * MAX_SPEED, strafe * MAX_SPEED, 0);
-
-        } else {
 
 
-            drive = driverGamepad.left_stick_y * direction;
-            rotate = driverGamepad.right_stick_x * direction;
 
-            //Mecanum direction calculation
-            if(driverGamepad.y && vu.targetVisible) {
-                rotate = vuController.run(vu.getYaw());
-                direction = -1;
-            }
-            if(direction == -1) {
-                // If direction is reversed
-                front_left = drive - strafe + rotate;
-                rear_left = drive + strafe + rotate;
-                front_right = drive + strafe - rotate;
-                rear_right = drive - strafe - rotate;
-            } else {
-                // If direction is normal
-                front_left = drive - strafe - rotate;
-                rear_left = drive + strafe - rotate;
-                front_right = drive + strafe + rotate;
-                rear_right = drive - strafe + rotate;
-            }
+        drive = driverGamepad.left_stick_y * direction;
+        rotate = driverGamepad.right_stick_x * direction;
+
+        //Mecanum direction calculation
+
+        // If direction is normal
+        front_left = drive - strafe - rotate;
+        rear_left = drive + strafe - rotate;
+        front_right = drive + strafe + rotate;
+        rear_right = drive - strafe + rotate;
+
 //-----------------------------------Gamepad 1 Start------------------------------------------------
 
-            robotDrive.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robotDrive.backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robotDrive.frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robotDrive.backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robotDrive.frontLeftMotor.setPower(robotDrive.limit(front_left)* MAX_SPEED);
-            robotDrive.backLeftMotor.setPower(robotDrive.limit(rear_left)* MAX_SPEED);
-            robotDrive.frontRightMotor.setPower(robotDrive.limit(front_right)* MAX_SPEED);
-            robotDrive.backRightMotor.setPower(robotDrive.limit(rear_right)* MAX_SPEED);
+        robotDrive.frontLeftMotor.setPower(robotDrive.limit(front_left)* MAX_SPEED);
+        robotDrive.backLeftMotor.setPower(robotDrive.limit(rear_left)* MAX_SPEED);
+        robotDrive.frontRightMotor.setPower(robotDrive.limit(front_right)* MAX_SPEED);
+        robotDrive.backRightMotor.setPower(robotDrive.limit(rear_right)* MAX_SPEED);
 
-        }
+
     }
 
     public void arcadeDrive(double forward, double rotate, boolean squareInputs) {

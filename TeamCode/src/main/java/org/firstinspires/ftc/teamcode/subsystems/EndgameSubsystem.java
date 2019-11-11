@@ -15,7 +15,6 @@ public class EndgameSubsystem implements Subsystem {
 
         leftFoundationServo = hw.servo.get("leftFServo");
         rightFoundationServo = hw.servo.get("rightFServo");
-        leftFoundationServo.setDirection(Servo.Direction.FORWARD);
 
         zoneServo = hw.servo.get("zoneServo");
         goToZone = false;
@@ -44,7 +43,7 @@ public class EndgameSubsystem implements Subsystem {
         }
 
         if(driverGamepad.y) {
-            leftFoundationServo.setPosition(0.85);
+            leftFoundationServo.setPosition(0.8);
             rightFoundationServo.setPosition(0.1);
         } else {
             leftFoundationServo.setPosition(0);
