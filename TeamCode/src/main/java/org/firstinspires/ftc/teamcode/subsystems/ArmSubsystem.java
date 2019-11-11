@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class ArmSubsystem implements Subsystem {
-    Servo leftIntake, rightIntake;
+    public Servo leftIntake, rightIntake, zoneServo;
     DcMotorEx leftArmMotor, rightArmMotor;
     Gamepad driverGameapd;
     HardwareMap hardwareMap;
@@ -25,10 +25,10 @@ public class ArmSubsystem implements Subsystem {
 
         leftArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("leftArmMotor");
         rightArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("rightArmMotor");
-        leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         toggleIntake = false;
         previousTriggerValue = false;
@@ -56,20 +56,20 @@ public class ArmSubsystem implements Subsystem {
 
 
         if(toggleIntake) {
-            leftIntake.setPosition(90);
-            rightIntake.setPosition(90);
-        } else  {
-            leftIntake.setPosition(0);
-            rightIntake.setPosition(0);
+            leftIntake.setPosition(.49);
+            rightIntake.setPosition(.45);
+        } else {
+            leftIntake.setPosition(.72);
+            rightIntake.setPosition(.22);
         }
 
         if(driverGameapd.left_trigger > 0) {
-            leftArmMotor.setPower(-0.5);
-            rightArmMotor.setPower(-0.5);
+            leftArmMotor.setPower(-0.25);
+            rightArmMotor.setPower(-0.25);
 
         } else if(driverGameapd.left_bumper) {
-            leftArmMotor.setPower(0.75);
-            rightArmMotor.setPower(0.75);
+            leftArmMotor.setPower(0.4);
+            rightArmMotor.setPower(0.4);
         } else {
             leftArmMotor.setPower(0);
             rightArmMotor.setPower(-0);
