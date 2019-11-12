@@ -56,8 +56,8 @@ public class ArmSubsystem implements Subsystem {
 
 
         if(toggleIntake) {
-            leftIntake.setPosition(.49);
-            rightIntake.setPosition(.45);
+            leftIntake.setPosition(.47);
+            rightIntake.setPosition(.47);
         } else {
             leftIntake.setPosition(.72);
             rightIntake.setPosition(.22);

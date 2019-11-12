@@ -95,7 +95,7 @@ public class DriveSubsystem implements Subsystem {
     public void update() {
 
         //speed
-        if(driverGamepad.x){
+        if(driverGamepad.right_bumper){
             MAX_SPEED = 0.5;
         }
         else {
@@ -121,6 +121,7 @@ public class DriveSubsystem implements Subsystem {
         rear_left = drive + strafe - rotate;
         front_right = drive + strafe + rotate;
         rear_right = drive - strafe + rotate;
+
 
 //-----------------------------------Gamepad 1 Start------------------------------------------------
 

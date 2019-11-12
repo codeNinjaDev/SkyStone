@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class EndgameSubsystem implements Subsystem {
     Gamepad driverGamepad;
     HardwareMap hw;
+    boolean foundationToggle = true;
     boolean goToZone;
     public Servo leftFoundationServo, rightFoundationServo, zoneServo;
     public EndgameSubsystem(Gamepad driverGamepad, HardwareMap hw) {
