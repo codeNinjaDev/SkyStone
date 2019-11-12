@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.libs.PIDController;
+import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem;
@@ -66,7 +67,7 @@ public class Teleop extends OpMode
     EndgameSubsystem endgameSubsystem;
     DriveSubsystem driveSubsystem;
     ArmSubsystem intake;
-
+    SuperGamepad driverGamepad;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -74,10 +75,10 @@ public class Teleop extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-
-        driveSubsystem = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
-        intake = new ArmSubsystem(gamepad1, hardwareMap);
-        endgameSubsystem = new EndgameSubsystem(gamepad1, hardwareMap);
+        driverGamepad = new SuperGamepad(gamepad1);
+        driveSubsystem = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
+        intake = new ArmSubsystem(driverGamepad, hardwareMap);
+        endgameSubsystem = new EndgameSubsystem(driverGamepad, hardwareMap);
 
         stop();
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters

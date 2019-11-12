@@ -7,16 +7,22 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class ArmSubsystem implements Subsystem {
-    public Servo leftIntake, rightIntake, zoneServo;
-    DcMotorEx leftArmMotor, rightArmMotor;
-    Gamepad driverGameapd;
-    HardwareMap hardwareMap;
-    boolean toggleIntake;
-    boolean previousTriggerValue;
-    boolean currentTriggerValue;
+import org.firstinspires.ftc.teamcode.libs.ButtonReader;
+import org.firstinspires.ftc.teamcode.libs.GamepadKeys;
+import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
+import org.firstinspires.ftc.teamcode.libs.ToggleTriggerReader;
+import org.firstinspires.ftc.teamcode.libs.TriggerReader;
 
-    public ArmSubsystem(Gamepad driverGamepad, HardwareMap hardwareMap) {
+public class ArmSubsystem implements Subsystem {
+    Servo leftIntake, rightIntake, zoneServo;
+    DcMotorEx leftArmMotor, rightArmMotor;
+    SuperGamepad driverGameapd;
+    HardwareMap hardwareMap;
+
+    private ToggleTriggerReader intakeToggle;
+    private TriggerReader armDownButton;
+    private ButtonReader armUpButton;
+    public ArmSubsystem(SuperGamepad driverGamepad, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.driverGameapd = driverGamepad;
 
@@ -25,14 +31,15 @@ public class ArmSubsystem implements Subsystem {
 
         leftArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("leftArmMotor");
         rightArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("rightArmMotor");
+
         rightArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        toggleIntake = false;
-        previousTriggerValue = false;
-        currentTriggerValue = false;
+        intakeToggle = new ToggleTriggerReader(driverGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER);
+        armDownButton = new TriggerReader(driverGamepad, GamepadKeys.Trigger.LEFT_TRIGGER);
+        armUpButton = new ButtonReader(driverGamepad, GamepadKeys.Button.LEFT_BUMPER);
     }
 
     public void init() {
@@ -44,18 +51,11 @@ public class ArmSubsystem implements Subsystem {
     }
 
     public void update() {
-        if(driverGameapd.right_trigger > 0) {
-            currentTriggerValue = true;
-        } else {
-            currentTriggerValue = false;
-        }
+        intakeToggle.readValue();
+        armDownButton.readValue();
+        armUpButton.readValue();
 
-        if(currentTriggerValue != previousTriggerValue) {
-            toggleIntake = !toggleIntake;
-        }
-
-
-        if(toggleIntake) {
+        if(intakeToggle.getState()) {
             leftIntake.setPosition(.49);
             rightIntake.setPosition(.45);
         } else {
@@ -63,11 +63,11 @@ public class ArmSubsystem implements Subsystem {
             rightIntake.setPosition(.22);
         }
 
-        if(driverGameapd.left_trigger > 0) {
+        if(armDownButton.isDown()) {
             leftArmMotor.setPower(-0.25);
             rightArmMotor.setPower(-0.25);
 
-        } else if(driverGameapd.left_bumper) {
+        } else if(armUpButton.isDown()) {
             leftArmMotor.setPower(0.4);
             rightArmMotor.setPower(0.4);
         } else {
@@ -76,7 +76,6 @@ public class ArmSubsystem implements Subsystem {
 
         }
 
-        previousTriggerValue = currentTriggerValue;
     }
 
     public void stop() {

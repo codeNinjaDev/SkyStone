@@ -2,42 +2,61 @@ package org.firstinspires.ftc.teamcode.libs;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-
-public class ButtonReader implements KeyReader {
+public class TriggerReader implements KeyReader {
     private SuperGamepad gamepad;
-    private GamepadKeys.Button button;
+    private GamepadKeys.Trigger trigger;
     /** Last state of the button **/
     private boolean lastState;
     /** Current state of the button **/
     private boolean currState;
     private Telemetry telemetry;
     /*** Description of Button ***/
-    private String buttonName;
+    private String triggerName;
     /** Initializes controller variables
      * @param gamepad The controller joystick
-     * @param button The controller button
-    **/
-    public ButtonReader(SuperGamepad gamepad, GamepadKeys.Button button) {
+     * @param trigger The controller button
+     **/
+    public TriggerReader(SuperGamepad gamepad, GamepadKeys.Trigger trigger) {
         this.gamepad = gamepad;
-        this.button = button;
-        currState = this.gamepad.getButton(button);
+        this.trigger = trigger;
+        if(this.gamepad.getTrigger(trigger) > 0.8) {
+            currState = true;
+        } else {
+            currState = false;
+        }
         lastState = currState;
+        triggerName = "";
     }
 
-    public ButtonReader(SuperGamepad gamepad, GamepadKeys.Button button, String buttonName) {
+    public TriggerReader(SuperGamepad gamepad, GamepadKeys.Trigger trigger, String triggerName, Telemetry telemetry) {
         this.gamepad = gamepad;
-        this.button = button;
-        this.buttonName = buttonName + "_BUTTON";
-        currState = this.gamepad.getButton(button);
+        this.trigger = trigger;
+        if(this.gamepad.getTrigger(trigger) > 0.8) {
+            currState = true;
+        } else {
+            currState = false;
+        }
         lastState = currState;
+        this.telemetry = telemetry;
+        this.triggerName = triggerName;
     }
+
+
     /** Reads button value **/
     public void readValue() {
+        if(this.gamepad.getTrigger(trigger) > 0.8) {
+            currState = true;
+        } else {
+            currState = false;
+        }
         lastState = currState;
-        currState = this.gamepad.getButton(button);
     }
     /** Checks if the button is down **/
     public boolean isDown() {
+        if(triggerName != "") {
+            telemetry.addData(triggerName, currState);
+            telemetry.update();
+        }
         return currState;
     }
     /** Checks if the button was just pressed **/
