@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.TrackSkyStoneCommand;
 import org.firstinspires.ftc.teamcode.commands.TurnGyroCommand;
+import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
@@ -59,6 +60,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 public class MecanumTest extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
+    private SuperGamepad driverGamepad;
     private CommandRunner goToFoundation;
     private CommandRunner pullFoundation;
     private CommandRunner strafeOut;
@@ -88,7 +90,8 @@ public class MecanumTest extends LinearOpMode {
     public void runOpMode() {
         vu = new VuSubsystem(hardwareMap, telemetry, true);
         vu.init();
-        driveController = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
+        driverGamepad = new SuperGamepad(gamepad1);
+        driveController = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
         //arms = new SkystoneArm(hardwareMap);
         driveController.reset();
         goToFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, -30, 90, 5, telemetry), telemetry);

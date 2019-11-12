@@ -4,13 +4,22 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.libs.ButtonReader;
+import org.firstinspires.ftc.teamcode.libs.GamepadKeys;
+import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
+import org.firstinspires.ftc.teamcode.libs.ToggleButtonReader;
+
 public class EndgameSubsystem implements Subsystem {
-    Gamepad driverGamepad;
+    SuperGamepad driverGamepad;
     HardwareMap hw;
     boolean foundationToggle = true;
     boolean goToZone;
+
+    private ButtonReader zoneScoreButton;
+    private ToggleButtonReader foundationToggleButton;
+
     public Servo leftFoundationServo, rightFoundationServo, zoneServo;
-    public EndgameSubsystem(Gamepad driverGamepad, HardwareMap hw) {
+    public EndgameSubsystem(SuperGamepad driverGamepad, HardwareMap hw) {
         this.hw = hw;
         this.driverGamepad = driverGamepad;
 
@@ -19,6 +28,9 @@ public class EndgameSubsystem implements Subsystem {
 
         zoneServo = hw.servo.get("zoneServo");
         goToZone = false;
+
+        zoneScoreButton = new ButtonReader(driverGamepad, GamepadKeys.Button.BACK);
+        foundationToggleButton = new ToggleButtonReader(driverGamepad, GamepadKeys.Button.Y);
     }
 
     @Override
@@ -33,8 +45,10 @@ public class EndgameSubsystem implements Subsystem {
 
     @Override
     public void update() {
+        zoneScoreButton.readValue();
+        foundationToggleButton.readValue();
 
-        if(driverGamepad.back) {
+        if(zoneScoreButton.isDown()) {
             goToZone = true;
         }
         if(goToZone) {
@@ -43,7 +57,7 @@ public class EndgameSubsystem implements Subsystem {
             zoneServo.setPosition(0);
         }
 
-        if(driverGamepad.y) {
+        if(foundationToggleButton.getState()) {
             leftFoundationServo.setPosition(0.8);
             rightFoundationServo.setPosition(0.1);
         } else {
