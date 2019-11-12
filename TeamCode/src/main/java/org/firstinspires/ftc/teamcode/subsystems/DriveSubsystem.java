@@ -72,7 +72,7 @@ public class DriveSubsystem implements Subsystem {
         this.yaw = Double.MAX_VALUE;
         vuController = new PIDController(.1, 0, .05, .2, 5);
         vuController.setSetpoint(0);
-        slowModeButton = new ButtonReader(driverGamepad, GamepadKeys.Button.X);
+        slowModeButton = new ButtonReader(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER);
 
         robotDrive = new RobotDrive(hardwareMap, "rearLeft",
                 "frontLeft", "rearRight", "frontRight", false);
@@ -101,6 +101,7 @@ public class DriveSubsystem implements Subsystem {
         slowModeButton.readValue();
 
         //speed
+
         if(slowModeButton.isDown()){
             MAX_SPEED = 0.5;
         } else {

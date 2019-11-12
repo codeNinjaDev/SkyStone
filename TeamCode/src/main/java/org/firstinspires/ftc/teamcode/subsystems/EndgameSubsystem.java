@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.libs.ToggleButtonReader;
 public class EndgameSubsystem implements Subsystem {
     SuperGamepad driverGamepad;
     HardwareMap hw;
+    boolean foundationToggle = true;
     boolean goToZone;
 
     private ButtonReader zoneScoreButton;

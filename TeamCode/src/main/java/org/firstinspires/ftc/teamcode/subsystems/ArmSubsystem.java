@@ -55,6 +55,7 @@ public class ArmSubsystem implements Subsystem {
         armDownButton.readValue();
         armUpButton.readValue();
 
+
         if(intakeToggle.getState()) {
             leftIntake.setPosition(.49);
             rightIntake.setPosition(.45);
