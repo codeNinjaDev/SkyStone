@@ -113,8 +113,8 @@ public class BLUE_Auton extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         goToFoundation.runCommand();
-        leftFoundationServo.setPosition(0.8);
-        rightFoundationServo.setPosition(0.1);
+        leftFoundationServo.setPosition(0.85);
+        rightFoundationServo.setPosition(0.05);
         sleep(1500);
         pullFoundation.runCommand();
         leftFoundationServo.setPosition(0.1);

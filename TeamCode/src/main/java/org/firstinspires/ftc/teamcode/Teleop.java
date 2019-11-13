@@ -100,7 +100,7 @@ public class Teleop extends OpMode
      */
     @Override
     public void init_loop() {
-        telemetry.addData("Gamepad Data: ", driverGamepad.toString());
+
     }
 
     /*

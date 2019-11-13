@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.libs.ButtonReader;
 import org.firstinspires.ftc.teamcode.libs.GamepadKeys;
 import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
-import org.firstinspires.ftc.teamcode.libs.ToggleTriggerReader;
+import org.firstinspires.ftc.teamcode.libs.ToggleButtonReader;
 import org.firstinspires.ftc.teamcode.libs.TriggerReader;
 
 public class ArmSubsystem implements Subsystem {
@@ -19,7 +19,7 @@ public class ArmSubsystem implements Subsystem {
     SuperGamepad driverGameapd;
     HardwareMap hardwareMap;
 
-    private ToggleTriggerReader intakeToggle;
+    private ToggleButtonReader intakeToggle;
     private TriggerReader armDownButton;
     private ButtonReader armUpButton;
     public ArmSubsystem(SuperGamepad driverGamepad, HardwareMap hardwareMap) {
@@ -37,7 +37,7 @@ public class ArmSubsystem implements Subsystem {
         leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        intakeToggle = new ToggleTriggerReader(driverGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER);
+        intakeToggle = new ToggleButtonReader(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER);
         armDownButton = new TriggerReader(driverGamepad, GamepadKeys.Trigger.LEFT_TRIGGER);
         armUpButton = new ButtonReader(driverGamepad, GamepadKeys.Button.LEFT_BUMPER);
     }
@@ -57,11 +57,11 @@ public class ArmSubsystem implements Subsystem {
 
 
         if(intakeToggle.getState()) {
-            leftIntake.setPosition(.49);
-            rightIntake.setPosition(.45);
+            leftIntake.setPosition(.44);
+            rightIntake.setPosition(.85);
         } else {
-            leftIntake.setPosition(.72);
-            rightIntake.setPosition(.22);
+            leftIntake.setPosition(.7);
+            rightIntake.setPosition(.58);
         }
 
         if(armDownButton.isDown()) {

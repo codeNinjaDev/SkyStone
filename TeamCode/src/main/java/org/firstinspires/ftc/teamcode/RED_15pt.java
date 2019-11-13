@@ -66,7 +66,7 @@ public class RED_15pt extends LinearOpMode {
     private CommandRunner strafeOut;
     private CommandRunner getOffTheWall;
     private CommandRunner turnTowardBridge;
-    private CommandRunner goToBlocks;
+
 
     private CommandRunner park;
 
@@ -90,13 +90,13 @@ public class RED_15pt extends LinearOpMode {
         //arms = new SkystoneArm(hardwareMap);
         driveController.reset();
 
-        goToFoundation = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, -28, 90, 5, telemetry), telemetry);
-        pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 26.5, 90, 10, telemetry), telemetry);
-        strafeOut = new CommandRunner(this, new MecanumDriveCommand(driveController, -35, 0, 10, telemetry), telemetry);
+        goToFoundation = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, -30, 90, 5, telemetry), telemetry);
+        pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 29, 90, 10, telemetry), telemetry);
+        strafeOut = new CommandRunner(this, new MecanumDriveCommand(driveController, -47, 0, 10, telemetry), telemetry);
         getOffTheWall = new CommandRunner(this, new MecanumDriveCommand(driveController, -20, 90, 10, telemetry), telemetry);
 
         turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, -91, 5), telemetry);
-        goToBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, 23, 90, 10, telemetry), telemetry);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -115,9 +115,10 @@ public class RED_15pt extends LinearOpMode {
         turnTowardBridge.runCommand();
         sleep(50);
 
+
         telemetry.addData("Gyro: ", driveController.getHeading());
         telemetry.update();
-        goToBlocks.runCommand();
+        //goToBlocks.runCommand();
 
     }
 }

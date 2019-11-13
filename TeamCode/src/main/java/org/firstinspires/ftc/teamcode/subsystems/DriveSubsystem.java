@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Parameters;
 
-import org.firstinspires.ftc.teamcode.libs.ButtonReader;
+import org.firstinspires.ftc.teamcode.libs.TriggerReader;
 import org.firstinspires.ftc.teamcode.libs.DriveUtils;
 import org.firstinspires.ftc.teamcode.libs.GamepadKeys;
 import org.firstinspires.ftc.teamcode.libs.PIDController;
@@ -33,7 +33,7 @@ public class DriveSubsystem implements Subsystem {
     private Telemetry tl;
     public HardwareMap hardwareMap = null;
 
-    private ButtonReader slowModeButton;
+    private TriggerReader slowModeButton;
     private
     //Drive Variables
     double drive;
@@ -72,7 +72,7 @@ public class DriveSubsystem implements Subsystem {
         this.yaw = Double.MAX_VALUE;
         vuController = new PIDController(.1, 0, .05, .2, 5);
         vuController.setSetpoint(0);
-        slowModeButton = new ButtonReader(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER);
+        slowModeButton = new TriggerReader(driverGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER);
 
         robotDrive = new RobotDrive(hardwareMap, "rearLeft",
                 "frontLeft", "rearRight", "frontRight", false);

@@ -18,21 +18,24 @@ public class EndgameSubsystem implements Subsystem {
     boolean goToZone;
 
     private ButtonReader zoneScoreButton;
+    private ButtonReader capstoneButton;
     private ToggleButtonReader foundationToggleButton;
 
-    public Servo leftFoundationServo, rightFoundationServo, zoneServo;
+    public Servo leftFoundationServo, rightFoundationServo, zoneServo, capstoneServo;
     public EndgameSubsystem(SuperGamepad driverGamepad, HardwareMap hw) {
         this.hw = hw;
         this.driverGamepad = driverGamepad;
 
         leftFoundationServo = hw.servo.get("leftFServo");
         rightFoundationServo = hw.servo.get("rightFServo");
+        capstoneServo = hw.servo.get("capstoneServo");
 
         zoneServo = hw.servo.get("zoneServo");
         goToZone = false;
 
         zoneScoreButton = new ButtonReader(driverGamepad, GamepadKeys.Button.BACK);
         foundationToggleButton = new ToggleButtonReader(driverGamepad, GamepadKeys.Button.Y);
+        capstoneButton = new ButtonReader(driverGamepad, GamepadKeys.Button.B);
     }
 
     @Override
@@ -49,6 +52,7 @@ public class EndgameSubsystem implements Subsystem {
     public void update() {
         zoneScoreButton.readValue();
         foundationToggleButton.readValue();
+        capstoneButton.readValue();
 
         if(zoneScoreButton.isDown()) {
             goToZone = true;
@@ -60,11 +64,17 @@ public class EndgameSubsystem implements Subsystem {
         }
 
         if(foundationToggleButton.getState()) {
-            leftFoundationServo.setPosition(0.8);
-            rightFoundationServo.setPosition(0.1);
+            leftFoundationServo.setPosition(0.85);
+            rightFoundationServo.setPosition(0.05);
         } else {
             leftFoundationServo.setPosition(0);
-            rightFoundationServo.setPosition(0.95);
+            rightFoundationServo.setPosition(0.98);
+        }
+
+        if(capstoneButton.isDown()) {
+            capstoneServo.setPosition(0.3);
+        } else {
+            capstoneServo.setPosition(0.6);
         }
     }
 

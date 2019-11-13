@@ -19,7 +19,7 @@ public class TriggerReader implements KeyReader {
     public TriggerReader(SuperGamepad gamepad, GamepadKeys.Trigger trigger) {
         this.gamepad = gamepad;
         this.trigger = trigger;
-        if(this.gamepad.getTrigger(trigger) > 0.8) {
+        if(this.gamepad.getTrigger(trigger) > 0.5) {
             currState = true;
         } else {
             currState = false;
@@ -31,7 +31,7 @@ public class TriggerReader implements KeyReader {
     public TriggerReader(SuperGamepad gamepad, GamepadKeys.Trigger trigger, String triggerName, Telemetry telemetry) {
         this.gamepad = gamepad;
         this.trigger = trigger;
-        if(this.gamepad.getTrigger(trigger) > 0.8) {
+        if(this.gamepad.getTrigger(trigger) > 0.5) {
             currState = true;
         } else {
             currState = false;
@@ -44,7 +44,7 @@ public class TriggerReader implements KeyReader {
 
     /** Reads button value **/
     public void readValue() {
-        if(this.gamepad.getTrigger(trigger) > 0.8) {
+        if(this.gamepad.getTrigger(trigger) > 0.5) {
             currState = true;
         } else {
             currState = false;
