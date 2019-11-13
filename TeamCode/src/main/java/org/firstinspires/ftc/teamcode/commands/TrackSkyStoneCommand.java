@@ -41,7 +41,7 @@ public class TrackSkyStoneCommand implements Command {
     public void update(Telemetry tl) {
         vuSubsystem.update();
 
-        driveSubsystem.arcadeDrive(-0.08, 0, false);
+        driveSubsystem.arcadeDrive(-0.1, 0, false);
     }
 
     @Override

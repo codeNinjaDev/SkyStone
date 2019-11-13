@@ -108,13 +108,13 @@ public class DriveSubsystem implements Subsystem {
             MAX_SPEED = 1;
         }
 
-        strafe = driverGamepad.left_stick_x;
+        strafe = driverGamepad.getLeftX();
         if(Math.abs(strafe) < 0.2) {
             strafe = 0;
         }
 
-        drive = driverGamepad.left_stick_y;
-        rotate = driverGamepad.right_stick_x;
+        drive = driverGamepad.getLeftY();
+        rotate = driverGamepad.getRightX();
 
         //Mecanum direction calculation
 
