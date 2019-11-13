@@ -3,11 +3,8 @@ package org.firstinspires.ftc.teamcode.libs;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 
-
-public class SuperGamepad extends Gamepad {
-    Gamepad gamepad;
-
-
+public class SuperGamepad {
+    public Gamepad gamepad;
 
     public SuperGamepad(Gamepad gamepad) {
         this.gamepad = gamepad;
@@ -58,5 +55,20 @@ public class SuperGamepad extends Gamepad {
         }
         return triggerValue;
     }
-}
 
+    public double getLeftY() {
+        return gamepad.left_stick_y;
+    }
+
+    public double getRightY() {
+        return gamepad.right_stick_y;
+    }
+
+    public double getLeftX() {
+        return gamepad.left_stick_x;
+    }
+
+    public double getRightX() {
+        return gamepad.right_stick_x;
+    }
+}

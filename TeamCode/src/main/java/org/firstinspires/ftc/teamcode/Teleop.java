@@ -41,7 +41,7 @@ import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 
 /**
@@ -100,6 +100,7 @@ public class Teleop extends OpMode
      */
     @Override
     public void init_loop() {
+        telemetry.addData("Gamepad Data: ", driverGamepad.toString());
     }
 
     /*
