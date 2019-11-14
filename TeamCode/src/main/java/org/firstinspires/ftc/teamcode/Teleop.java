@@ -41,6 +41,7 @@ import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.SkystoneArm;
 //import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 
@@ -67,6 +68,7 @@ public class Teleop extends OpMode
     EndgameSubsystem endgameSubsystem;
     DriveSubsystem driveSubsystem;
     ArmSubsystem intake;
+    SkystoneArm skystoneArm;
     SuperGamepad driverGamepad;
     /*
      * Code to run ONCE when the driver hits INIT
@@ -79,6 +81,7 @@ public class Teleop extends OpMode
         driveSubsystem = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
         intake = new ArmSubsystem(driverGamepad, hardwareMap);
         endgameSubsystem = new EndgameSubsystem(driverGamepad, hardwareMap);
+        skystoneArm = new SkystoneArm(hardwareMap);
 
         stop();
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
@@ -122,6 +125,7 @@ public class Teleop extends OpMode
 
         driveSubsystem.update();
         endgameSubsystem.update();
+        skystoneArm.update();
         intake.update();
         telemetry.update();
     }

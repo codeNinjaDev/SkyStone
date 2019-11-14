@@ -42,7 +42,8 @@ public class SkystoneArm implements Subsystem {
 
     @Override
     public void update() {
-
+        leftServo.setPosition(0.1);
+        rightServo.setPosition(0.65);
     }
 
     @Override
