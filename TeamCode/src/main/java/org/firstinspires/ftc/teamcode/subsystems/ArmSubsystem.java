@@ -66,11 +66,11 @@ public class ArmSubsystem implements Subsystem {
 
         if(unfoldIntake) {
             if (intakeToggle.getState()) {
-                leftIntake.setPosition(.44);
+                leftIntake.setPosition(.24);
                 rightIntake.setPosition(.85);
             } else {
-                leftIntake.setPosition(.7);
-                rightIntake.setPosition(.58);
+                leftIntake.setPosition(.38);
+                rightIntake.setPosition(.7);
             }
         }
 
