@@ -103,13 +103,13 @@ public class DriveSubsystem implements Subsystem {
         //speed
 
         if(slowModeButton.isDown()){
-            MAX_SPEED = 0.5;
+            MAX_SPEED = 0.25;
         } else {
             MAX_SPEED = 1;
         }
 
         strafe = driverGamepad.getLeftX();
-        if(Math.abs(strafe) < 0.2) {
+        if(Math.abs(strafe) < 0.5) {
             strafe = 0;
         }
 
