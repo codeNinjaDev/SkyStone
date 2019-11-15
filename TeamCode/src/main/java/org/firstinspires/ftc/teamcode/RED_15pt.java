@@ -83,7 +83,7 @@ public class RED_15pt extends LinearOpMode {
 
     DriveSubsystem driveController;
     SkystoneArm arms;
-    Servo leftFoundationServo, rightFoundationServo, leftClaw, rightClaw;
+    Servo leftFoundationServo, rightFoundationServo, leftClaw, rightClaw, capstoneServo;
 
 
     @Override
@@ -93,6 +93,8 @@ public class RED_15pt extends LinearOpMode {
         rightClaw = hardwareMap.servo.get("rightIntake");
 
         vu.init();
+
+        capstoneServo = hardwareMap.servo.get("capstoneServo");
 
         leftFoundationServo = hardwareMap.servo.get("leftFServo");
         rightFoundationServo = hardwareMap.servo.get("rightFServo");
@@ -117,6 +119,8 @@ public class RED_15pt extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        capstoneServo.setPosition(0.7);
+
         arms.moveLeftArmUp();
         arms.moveRightArmUp();
         goToFoundation.runCommand();
