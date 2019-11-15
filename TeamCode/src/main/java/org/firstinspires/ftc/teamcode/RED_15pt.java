@@ -42,6 +42,7 @@ import org.firstinspires.ftc.teamcode.commands.TurnGyroCommand;
 import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.SkystoneArm;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -55,7 +56,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RED_15pt", group="Autos")  // @Autonomous(...) is the other common choice
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RED_15pt", group="15pt Autos")  // @Autonomous(...) is the other common choice
 //@Disabled
 public class RED_15pt extends LinearOpMode {
 
@@ -63,20 +64,24 @@ public class RED_15pt extends LinearOpMode {
     private SuperGamepad driverGamepad;
     private CommandRunner goToFoundation;
     private CommandRunner pullFoundation;
-    private CommandRunner strafeOut;
-    private CommandRunner getOffTheWall;
+    private CommandRunner turnToZone;
+    private CommandRunner strafeToZone;
+    private CommandRunner backOutOfZone;
     private CommandRunner turnTowardBridge;
-
-
+    private CommandRunner strafeTowardBlocks;
+    private CommandRunner goToBlocks;
+    private CommandRunner goToFirstSkyStone;
+    private CommandRunner align;
+    private CommandRunner lineUpBetter;
+    private CommandRunner strafeToSkystone1;
+    private CommandRunner strafeAwaySkystone1;
+    private CommandRunner driveBackToBase;
     private CommandRunner park;
-
-    //private CommandRunner drivePolar;
-
     VuSubsystem vu;
 
     DriveSubsystem driveController;
     //SkystoneArm arms;
-    Servo leftFoundationServo, rightFoundationServo;
+    Servo leftFoundationServo, rightFoundationServo, leftServo, rightServo;
 
     @Override
     public void runOpMode() {
@@ -85,19 +90,21 @@ public class RED_15pt extends LinearOpMode {
 
         leftFoundationServo = hardwareMap.servo.get("leftFServo");
         rightFoundationServo = hardwareMap.servo.get("rightFServo");
+        leftServo = hardwareMap.servo.get("leftStoneServo");
+        rightServo = hardwareMap.servo.get("rightStoneServo");
         driverGamepad = new SuperGamepad(gamepad1);
         driveController = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
         //arms = new SkystoneArm(hardwareMap);
         driveController.reset();
 
-        goToFoundation = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, -30, 90, 5, telemetry), telemetry);
-        pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 29, 90, 10, telemetry), telemetry);
-        strafeOut = new CommandRunner(this, new MecanumDriveCommand(driveController, -47, 0, 10, telemetry), telemetry);
-        getOffTheWall = new CommandRunner(this, new MecanumDriveCommand(driveController, -20, 90, 10, telemetry), telemetry);
-
-        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, -91, 5), telemetry);
-
-
+        goToFoundation = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, -31, 90, 5, telemetry), telemetry);
+        pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 10, 90, 10, telemetry), telemetry);
+        turnToZone = new CommandRunner(this, new TurnGyroCommand(driveController, -110, 5), telemetry);
+        strafeToZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 20, 0, 10, telemetry), telemetry);
+        backOutOfZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 10, 90, 10, telemetry), telemetry);
+        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, -90, 1), telemetry);
+        strafeTowardBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, -20, 0, 10, telemetry), telemetry);
+        goToBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, 25, 90, 10, telemetry), telemetry);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         goToFoundation.runCommand();
@@ -105,20 +112,14 @@ public class RED_15pt extends LinearOpMode {
         rightFoundationServo.setPosition(0.1);
         sleep(1500);
         pullFoundation.runCommand();
+        turnToZone.runCommand();
+        strafeToZone.runCommand();
         leftFoundationServo.setPosition(0.1);
         rightFoundationServo.setPosition(0.8);
         sleep(250);
-        strafeOut.runCommand();
-        sleep(50);
-        getOffTheWall.runCommand();
-        sleep(50);
+        backOutOfZone.runCommand();
         turnTowardBridge.runCommand();
-        sleep(50);
-
-
-        telemetry.addData("Gyro: ", driveController.getHeading());
-        telemetry.update();
-        //goToBlocks.runCommand();
-
-    }
+        strafeTowardBlocks.runCommand();
+        goToBlocks.runCommand();
+   }
 }

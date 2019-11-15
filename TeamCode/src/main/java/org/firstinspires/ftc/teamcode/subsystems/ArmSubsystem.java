@@ -22,6 +22,9 @@ public class ArmSubsystem implements Subsystem {
     private ToggleButtonReader intakeToggle;
     private TriggerReader armDownButton;
     private ButtonReader armUpButton;
+
+    private boolean unfoldIntake;
+
     public ArmSubsystem(SuperGamepad driverGamepad, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.driverGameapd = driverGamepad;
@@ -43,7 +46,8 @@ public class ArmSubsystem implements Subsystem {
     }
 
     public void init() {
-
+        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void reset() {
@@ -56,18 +60,24 @@ public class ArmSubsystem implements Subsystem {
         armUpButton.readValue();
 
 
-        if(intakeToggle.getState()) {
-            leftIntake.setPosition(.44);
-            rightIntake.setPosition(.85);
-        } else {
-            leftIntake.setPosition(.7);
-            rightIntake.setPosition(.58);
+        if(leftArmMotor.getCurrentPosition() > 100) {
+            unfoldIntake = true;
         }
+
+        if(unfoldIntake) {
+            if (intakeToggle.getState()) {
+                leftIntake.setPosition(.24);
+                rightIntake.setPosition(.85);
+            } else {
+                leftIntake.setPosition(.38);
+                rightIntake.setPosition(.7);
+            }
+        }
+
 
         if(armDownButton.isDown()) {
             leftArmMotor.setPower(-0.25);
             rightArmMotor.setPower(-0.25);
-
         } else if(armUpButton.isDown()) {
             leftArmMotor.setPower(0.4);
             rightArmMotor.setPower(0.4);
@@ -76,7 +86,6 @@ public class ArmSubsystem implements Subsystem {
             rightArmMotor.setPower(-0);
 
         }
-
     }
 
     public void stop() {
