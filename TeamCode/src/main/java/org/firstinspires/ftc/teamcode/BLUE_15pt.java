@@ -41,6 +41,7 @@ import org.firstinspires.ftc.teamcode.commands.TrackSkyStoneCommand;
 import org.firstinspires.ftc.teamcode.commands.TurnGyroCommand;
 import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.SkystoneArm;
 import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 //import org.firstinspires.ftc.teamcode.subsystems.SkystoneArm;
 
@@ -69,8 +70,9 @@ public class BLUE_15pt extends LinearOpMode {
     private CommandRunner backOutOfZone;
     private CommandRunner turnTowardBridge;
     private CommandRunner strafeTowardBlocks;
-    private CommandRunner goToBlocks;
+    private CommandRunner makeWayForPartner;
     private CommandRunner goToFirstSkyStone;
+
     private CommandRunner align;
     private CommandRunner lineUpBetter;
     private CommandRunner strafeToSkystone1;
@@ -80,8 +82,9 @@ public class BLUE_15pt extends LinearOpMode {
     VuSubsystem vu;
 
     DriveSubsystem driveController;
-    //SkystoneArm arms;
-    Servo leftFoundationServo, rightFoundationServo, leftServo, rightServo;
+    SkystoneArm arms;
+    Servo leftFoundationServo, rightFoundationServo;
+
 
     @Override
     public void runOpMode() {
@@ -90,23 +93,24 @@ public class BLUE_15pt extends LinearOpMode {
 
         leftFoundationServo = hardwareMap.servo.get("leftFServo");
         rightFoundationServo = hardwareMap.servo.get("rightFServo");
-        leftServo = hardwareMap.servo.get("leftStoneServo");
-        rightServo = hardwareMap.servo.get("rightStoneServo");
+
         driverGamepad = new SuperGamepad(gamepad1);
         driveController = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
-        //arms = new SkystoneArm(hardwareMap);
+        arms = new SkystoneArm(hardwareMap);
         driveController.reset();
 
         goToFoundation = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, -31, 90, 5, telemetry), telemetry);
         pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 10, 90, 10, telemetry), telemetry);
-        turnToZone = new CommandRunner(this, new TurnGyroCommand(driveController, 110, 5), telemetry);
-        strafeToZone = new CommandRunner(this, new MecanumDriveCommand(driveController, -20, 0, 10, telemetry), telemetry);
-        backOutOfZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 10, 90, 10, telemetry), telemetry);
-        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, 90, 1), telemetry);
-        strafeTowardBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, 20, 0, 10, telemetry), telemetry);
-        goToBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, 25, 90, 10, telemetry), telemetry);
+        turnToZone = new CommandRunner(this, new TurnGyroCommand(driveController, 110, 0.2, 8), telemetry);
+        strafeToZone = new CommandRunner(this, new MecanumDriveCommand(driveController, -30, 0, 10, telemetry), telemetry);
+        makeWayForPartner = new CommandRunner(this, new MecanumDriveCommand(driveController, 30, 0, 10, telemetry), telemetry);
+        backOutOfZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 35, 90, 10, telemetry), telemetry);
+        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, 90, 3), telemetry);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        arms.moveLeftArmUp();
+        arms.moveRightArmUp();
         goToFoundation.runCommand();
         leftFoundationServo.setPosition(0.8);
         rightFoundationServo.setPosition(0.1);
@@ -114,12 +118,13 @@ public class BLUE_15pt extends LinearOpMode {
         pullFoundation.runCommand();
         turnToZone.runCommand();
         strafeToZone.runCommand();
+
         leftFoundationServo.setPosition(0.1);
         rightFoundationServo.setPosition(0.8);
+        makeWayForPartner.runCommand();
+
         sleep(250);
         backOutOfZone.runCommand();
         turnTowardBridge.runCommand();
-        strafeTowardBlocks.runCommand();
-        goToBlocks.runCommand();
     }
 }

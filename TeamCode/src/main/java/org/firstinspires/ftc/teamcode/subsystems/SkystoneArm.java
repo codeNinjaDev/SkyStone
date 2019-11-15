@@ -13,22 +13,24 @@ public class SkystoneArm implements Subsystem {
 
     }
 
-    public void moveLeftArmUp() {
-        leftServo.setPosition(0);
-    }
 
-    public void moveRightArmUp() {
-        rightServo.setPosition(0);
-
-    }
 
     public void moveLeftArmDown() {
-        leftServo.setPosition(DOWN_POSITION);
+        leftServo.setPosition(0.7);
     }
 
     public void moveRightArmDown() {
-        rightServo.setPosition(DOWN_POSITION);
+        rightServo.setPosition(0.1);
     }
+
+    public void moveLeftArmUp() {
+        leftServo.setPosition(0.1);
+    }
+
+    public void moveRightArmUp() {
+        rightServo.setPosition(0.65);
+    }
+
 
     @Override
     public void init() {

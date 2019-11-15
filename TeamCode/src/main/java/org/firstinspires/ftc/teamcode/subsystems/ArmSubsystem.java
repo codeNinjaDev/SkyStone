@@ -60,16 +60,18 @@ public class ArmSubsystem implements Subsystem {
         armUpButton.readValue();
 
 
-        if(leftArmMotor.getCurrentPosition() > 100) {
+        if(leftArmMotor.getCurrentPosition() > 50) {
             unfoldIntake = true;
         }
 
         if(unfoldIntake) {
             if (intakeToggle.getState()) {
-                leftIntake.setPosition(.24);
+                //left low is closed
+                leftIntake.setPosition(.33);
+                // right high is open
                 rightIntake.setPosition(.85);
             } else {
-                leftIntake.setPosition(.38);
+                leftIntake.setPosition(.5);
                 rightIntake.setPosition(.7);
             }
         }

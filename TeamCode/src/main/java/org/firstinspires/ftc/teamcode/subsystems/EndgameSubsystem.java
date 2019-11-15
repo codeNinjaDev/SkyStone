@@ -74,7 +74,7 @@ public class EndgameSubsystem implements Subsystem {
         if(capstoneButton.isDown()) {
             capstoneServo.setPosition(0.3);
         } else {
-            capstoneServo.setPosition(0.6);
+            capstoneServo.setPosition(0.7);
         }
     }
 
