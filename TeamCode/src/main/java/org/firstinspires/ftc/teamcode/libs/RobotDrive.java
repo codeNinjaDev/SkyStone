@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Parameters;
 
 public class RobotDrive {
@@ -200,7 +201,22 @@ public class RobotDrive {
         frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void setDistance(DcMotor motor, double distance) {
+    public void setMotorVelocity(DcMotorEx motor, double velocity, boolean linear) {
+        if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        if(linear) {
+            double radius = Parameters.kWheelDiameter / 2;
+            // In radians per second
+            double angular_velocity = velocity / radius;
+            motor.setVelocity(angular_velocity, AngleUnit.RADIANS);
+        } else {
+            motor.setVelocity(velocity, AngleUnit.DEGREES);
+        }
+    }
+
+    public void setDistance(DcMotorEx motor, double distance) {
         motor.setTargetPosition((int) (distance * Parameters.kTickPerInches));
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

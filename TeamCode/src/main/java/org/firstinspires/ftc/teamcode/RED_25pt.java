@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -60,11 +61,10 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RED_25pt", group="25pt Autos")  // @Autonomous(...) is the other common choice
-//@Disabled
 public class RED_25pt extends LinearOpMode {
-
     private ElapsedTime runtime = new ElapsedTime();
     private SuperGamepad driverGamepad;
+    private CommandRunner scootIntoZone;
     private CommandRunner goToFoundation;
     private CommandRunner pullFoundation;
     private CommandRunner turnToZone;
@@ -106,24 +106,26 @@ public class RED_25pt extends LinearOpMode {
 
         stowClaws();
 
-
+        scootIntoZone = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, 9, 180, 2, telemetry), telemetry);
         goToFoundation = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, -31, 90, 5, telemetry), telemetry);
         pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 10, 90, 10, telemetry), telemetry);
-        turnToZone = new CommandRunner(this, new TurnGyroCommand(driveController, -110, 0.2, 5), telemetry);
-        strafeToZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 30, 0, 10, telemetry), telemetry);
-        makeWayForPartner = new CommandRunner(this, new MecanumDriveCommand(driveController, -22, 0, 10, telemetry), telemetry);
+        turnToZone = new CommandRunner(this, new TurnGyroCommand(driveController, 110, 0.2, 5), telemetry);
+        strafeToZone = new CommandRunner(this, new MecanumDriveCommand(driveController, -30, 0, 10, telemetry), telemetry);
+        makeWayForPartner = new CommandRunner(this, new MecanumDriveCommand(driveController, 22, 0, 10, telemetry), telemetry);
         backOutOfZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 35, 90, 10, telemetry), telemetry);
-        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, -95, 2), telemetry);
+        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, 95, 2), telemetry);
 
         goToBlocks = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 90, 10, telemetry), telemetry);
         goToFirstSkyStone = new CommandRunner(this, new TrackSkyStoneCommand(driveController, vu, 20, telemetry), telemetry);
-        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 0, 10, telemetry), telemetry);
-        scootOver = new CommandRunner(this, new MecanumDriveCommand(driveController, -6, 0, 3, telemetry), telemetry);
+        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, -18, 0, 10, telemetry), telemetry);
+        scootOver = new CommandRunner(this, new MecanumDriveCommand(driveController, 6, 0, 3, telemetry), telemetry);
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
         capstoneServo.setPosition(0.7);
+        scootOver.runCommand();
         arms.moveLeftArmUp();
         arms.moveRightArmUp();
         goToFoundation.runCommand();
@@ -143,21 +145,22 @@ public class RED_25pt extends LinearOpMode {
         backOutOfZone.runCommand();
 
         goToBlocks.runCommand();
+        driveController.robotDrive.resetEncoders();
         goToFirstSkyStone.runCommand();
-        double firstSkystoneDistance = driveController.robotDrive.getAverageDistance() + vu.horizontal_distance ;
+        double firstSkystoneDistance = Math.abs(driveController.robotDrive.getLeftDistance()) + vu.horizontal_distance;
         align = new CommandRunner(this, new MecanumDriveCommand(driveController, vu.horizontal_distance + 2, 90, 0.2, 5,telemetry), telemetry);
         align.runCommand();
-        strafeToSkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, vu.distance - 1, 0, 10, telemetry), telemetry);
+        strafeToSkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, -(vu.distance - 1), 0, 10, telemetry), telemetry);
 
         strafeToSkystone1.runCommand();
-        arms.moveLeftArmDown();
+        arms.moveRightArmDown();
         sleep(500);
         strafeAwaySkystone1.runCommand();
-        driveBackToBase = new CommandRunner(this, new MecanumDriveCommand(driveController, -(firstSkystoneDistance + 18 + 36), 90, 5, telemetry), telemetry);
+        driveBackToBase = new CommandRunner(this, new MecanumDriveCommand(driveController, -(firstSkystoneDistance + 18 + 12), 90, 5, telemetry), telemetry);
         driveBackToBase.runCommand();
-        arms.moveLeftArmUp();
+        arms.moveRightArmUp();
         sleep(500);
-        park = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 90, 10, telemetry), telemetry);
+        park = new CommandRunner(this, new MecanumDriveCommand(driveController, 15, 90, 10, telemetry), telemetry);
 
         park.runCommand();
         scootOver.runCommand();

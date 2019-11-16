@@ -34,7 +34,6 @@ public class TrackSkyStoneCommand implements Command {
     public void init() {
         timer.reset();
         timer.startTime();
-        driveSubsystem.reset();
     }
 
     @Override

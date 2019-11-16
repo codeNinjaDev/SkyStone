@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -63,6 +64,7 @@ public class BLUE_15pt extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private SuperGamepad driverGamepad;
+    private CommandRunner scootIntoZone;
     private CommandRunner goToFoundation;
     private CommandRunner pullFoundation;
     private CommandRunner turnToZone;
@@ -83,29 +85,39 @@ public class BLUE_15pt extends LinearOpMode {
 
     DriveSubsystem driveController;
     SkystoneArm arms;
-    Servo leftFoundationServo, rightFoundationServo, capstoneServo;
+    Servo leftFoundationServo, rightFoundationServo, leftClaw, rightClaw, capstoneServo;
 
 
     @Override
     public void runOpMode() {
         vu = new VuSubsystem(hardwareMap, telemetry, true);
+        leftClaw = hardwareMap.servo.get("leftIntake");
+        rightClaw = hardwareMap.servo.get("rightIntake");
+
         vu.init();
+
+        capstoneServo = hardwareMap.servo.get("capstoneServo");
 
         leftFoundationServo = hardwareMap.servo.get("leftFServo");
         rightFoundationServo = hardwareMap.servo.get("rightFServo");
-        capstoneServo = hardwareMap.servo.get("capstoneServo");
+
+
+
         driverGamepad = new SuperGamepad(gamepad1);
         driveController = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
         arms = new SkystoneArm(hardwareMap);
         driveController.reset();
 
+        stowClaws();
+
+        scootIntoZone = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, 9, 0, 2, telemetry), telemetry);
         goToFoundation = new CommandRunner(this, new MecanumDriveCommandSlow(driveController, -31, 90, 5, telemetry), telemetry);
         pullFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 10, 90, 10, telemetry), telemetry);
-        turnToZone = new CommandRunner(this, new TurnGyroCommand(driveController, 110, 0.2, 8), telemetry);
-        strafeToZone = new CommandRunner(this, new MecanumDriveCommand(driveController, -30, 0, 10, telemetry), telemetry);
-        makeWayForPartner = new CommandRunner(this, new MecanumDriveCommand(driveController, 30, 0, 10, telemetry), telemetry);
-        backOutOfZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 35, 90, 10, telemetry), telemetry);
-        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, 90, 3), telemetry);
+        turnToZone = new CommandRunner(this, new TurnGyroCommand(driveController, -110, 0.2, 8), telemetry);
+        strafeToZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 34, 0, 10, telemetry), telemetry);
+        makeWayForPartner = new CommandRunner(this, new MecanumDriveCommand(driveController, -34, 0, 10, telemetry), telemetry);
+        backOutOfZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 30, 90, 10, telemetry), telemetry);
+        turnTowardBridge = new CommandRunner(this, new TurnGyroCommand(driveController, -90, 3), telemetry);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -113,6 +125,7 @@ public class BLUE_15pt extends LinearOpMode {
 
         arms.moveLeftArmUp();
         arms.moveRightArmUp();
+        scootIntoZone.runCommand();
         goToFoundation.runCommand();
         leftFoundationServo.setPosition(0.8);
         rightFoundationServo.setPosition(0.1);
@@ -128,5 +141,10 @@ public class BLUE_15pt extends LinearOpMode {
         sleep(250);
         backOutOfZone.runCommand();
         turnTowardBridge.runCommand();
-    }
+   }
+
+   public void stowClaws() {
+        leftClaw.setPosition(1);
+        rightClaw.setPosition(.18);
+   }
 }

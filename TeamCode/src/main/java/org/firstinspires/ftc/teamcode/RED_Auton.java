@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -56,7 +57,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RED_Auton", group="Autos")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class RED_Auton extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
