@@ -160,7 +160,7 @@ public class BLUE_BETA extends LinearOpMode {
 
         goToSecondSkyStone = new CommandRunner(this, new MecanumDriveCommand(driveController, 16 + firstSkystoneDistance, 90, 25, 5, telemetry), telemetry);
 
-        align = new CommandRunner(this, new MecanumDriveCommand(driveController, vu.horizontal_distance, 90, 3, 5,telemetry), telemetry);
+        align = new CommandRunner(this, new MecanumDriveCommand(driveController, vu.distance - 2,  vu.horizontal_distance, 3, 5), telemetry);
         align.runCommand();
 
         sleep(500);
