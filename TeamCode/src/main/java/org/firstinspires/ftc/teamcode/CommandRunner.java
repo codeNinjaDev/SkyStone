@@ -10,8 +10,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 /***Executes Command***/
 public class CommandRunner {
     private LinearOpMode opMode;
-    private Command command;
+    public Command command;
     private Telemetry telemetry;
+
     public CommandRunner(LinearOpMode opMode, Command command, Telemetry telemetry) {
         this.opMode = opMode;
         this.command = command;
@@ -41,8 +42,7 @@ public class CommandRunner {
         try {
             scheduledExecutorService.scheduleAtFixedRate(updateMethod, 0,20, TimeUnit.MILLISECONDS);
             while(!command.isFinished() && opMode.opModeIsActive()) {
-                telemetry.addData("Running Command", "True");
-                telemetry.update();
+                //telemetry.update();
             }
             scheduledExecutorService.shutdownNow();
 

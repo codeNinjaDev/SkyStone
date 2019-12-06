@@ -36,7 +36,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.libs.PIDController;
+import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.SkystoneArm;
+//import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 
 
 /**
@@ -53,15 +59,17 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="Teleop New Stuff", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
 public class Teleop extends OpMode
 {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-
+    EndgameSubsystem endgameSubsystem;
     DriveSubsystem driveSubsystem;
-
+    ArmSubsystem intake;
+    SkystoneArm skystoneArm;
+    SuperGamepad driverGamepad;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -69,9 +77,13 @@ public class Teleop extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
+        driverGamepad = new SuperGamepad(gamepad1);
+        driveSubsystem = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
+        intake = new ArmSubsystem(driverGamepad, hardwareMap);
+        endgameSubsystem = new EndgameSubsystem(driverGamepad, hardwareMap, telemetry);
+        skystoneArm = new SkystoneArm(hardwareMap);
 
-        driveSubsystem = new DriveSubsystem(hardwareMap, gamepad1, telemetry);
-
+        stop();
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
@@ -91,6 +103,7 @@ public class Teleop extends OpMode
      */
     @Override
     public void init_loop() {
+
     }
 
     /*
@@ -99,6 +112,7 @@ public class Teleop extends OpMode
     @Override
     public void start() {
         runtime.reset();
+        driveSubsystem.stop();
 
 
     }
@@ -109,19 +123,12 @@ public class Teleop extends OpMode
     @Override
     public void loop() {
 
-
-
-        driveSubsystem.update(telemetry);
-
-
-
-        telemetry.addData("gamepad_right_y", gamepad1.right_stick_y);
-        telemetry.addData("gamepad_right_x", gamepad1.right_stick_x);
-
-
+        driveSubsystem.update();
+        endgameSubsystem.update();
+        skystoneArm.update();
+        intake.update();
+        telemetry.addData("Running", "True");
         telemetry.update();
-
-
     }
 
     /*
@@ -129,6 +136,7 @@ public class Teleop extends OpMode
      */
     @Override
     public void stop() {
+        driveSubsystem.stop();
     }
 
 }

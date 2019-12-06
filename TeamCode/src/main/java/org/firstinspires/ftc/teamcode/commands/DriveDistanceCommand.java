@@ -50,7 +50,7 @@ public class DriveDistanceCommand implements Command {
 
     @Override
     public void init() {
-        driveSubsystem.resetEncoders();
+        driveSubsystem.reset();
         pidController.setSetpoint(targetVelocity);
         timer.reset();
 
@@ -62,8 +62,8 @@ public class DriveDistanceCommand implements Command {
     public void update(Telemetry tl) {
 
         //Calculate Velocity
-        currRightPos = driveSubsystem.getRightDistance();
-        currLeftPos = driveSubsystem.getLeftDistance();
+        currRightPos = driveSubsystem.robotDrive.getRightDistance();
+        currLeftPos = driveSubsystem.robotDrive.getLeftDistance();
         currTime = timer.milliseconds();
         deltaTime = currTime - pastTime;
         deltaLeftPos = currLeftPos - pastLeftPos;
@@ -103,14 +103,14 @@ public class DriveDistanceCommand implements Command {
         /*double leftOutput = Math.min(kV + kS + kP*leftPositionError + kD*leftErrorDeriv, 1);
         double rightOutput =Math.min(kV + kS + kP*rightPositionError + kD*rightErrorDeriv, 1);
         (*/
-        driveSubsystem.tankDrive(leftOutput, rightOutput);
+        driveSubsystem.robotDrive.tankDrive(leftOutput, rightOutput);
 
     }
 
     @Override
     public boolean isFinished() {
         boolean timeoutReached = timer.seconds() >= timeout;
-        boolean positionReached = Math.abs(targetDistance - driveSubsystem.getAverageDistance()) <= .2 ;
+        boolean positionReached = Math.abs(targetDistance - driveSubsystem.robotDrive.getAverageDistance()) <= .2 ;
         return timeoutReached || positionReached;
     }
 
@@ -129,7 +129,7 @@ public class DriveDistanceCommand implements Command {
     @Override
     public void finish() {
 
-        driveSubsystem.stopDriving();
+        driveSubsystem.robotDrive.stopDriving();
     }
 }
 

@@ -15,7 +15,7 @@ public interface Subsystem {
     void reset();
 
     /*** Runs actual movement code in main loop ***/
-    void update(Telemetry telemetry);
+    void update();
 
     /*** Stops all motors ***/
     void stop();

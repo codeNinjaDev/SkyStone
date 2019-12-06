@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -8,146 +10,149 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Parameters;
+
+import org.firstinspires.ftc.teamcode.libs.TriggerReader;
+import org.firstinspires.ftc.teamcode.libs.DriveUtils;
+import org.firstinspires.ftc.teamcode.libs.GamepadKeys;
+import org.firstinspires.ftc.teamcode.libs.PIDController;
+import org.firstinspires.ftc.teamcode.libs.RobotDrive;
+import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
+import org.firstinspires.ftc.teamcode.libs.Vector2D;
+
 /**
  * Created by peter on 11/22/17.
  */
 
 public class DriveSubsystem implements Subsystem {
-    private Gamepad driverGamepad;
+    private SuperGamepad driverGamepad;
+    private PIDController vuController;
     double MAX_SPEED = 1;
-
     private Telemetry tl;
     public HardwareMap hardwareMap = null;
 
-    public DcMotor backLeftMotor = null;
-    DcMotor backRightMotor = null;
-    ElapsedTime pidTimer;
+    private TriggerReader slowModeButton;
+    private
+    //Drive Variables
+    double drive;
+    double strafe;
+    double rotate;
 
-    public DriveSubsystem(HardwareMap hardwareMap, Gamepad driverGamepad, Telemetry tl) {
+    double front_left;
+    double rear_left;
+    double front_right;
+    double rear_right;
+
+    //Speed Variables
+    boolean fastMode = true;
+
+
+    // Direction Variables
+    int direction = 1;
+    boolean toggleState = false;
+    boolean buttonState = false;
+    double yaw;
+    // The IMU sensor object
+    public BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
+    ElapsedTime pidTimer;
+    public RobotDrive robotDrive;
+    //TODO initialize frontMOtors
+    public DriveSubsystem(HardwareMap hardwareMap, SuperGamepad driverGamepad, Telemetry tl) {
         pidTimer = new ElapsedTime();
         this.driverGamepad = driverGamepad;
         this.tl = tl;
         this.hardwareMap = hardwareMap;
-        backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+        this.yaw = Double.MAX_VALUE;
+        vuController = new PIDController(.1, 0, .05, .2, 5);
+        vuController.setSetpoint(0);
+        slowModeButton = new TriggerReader(driverGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER);
 
+        robotDrive = new RobotDrive(hardwareMap, "rearLeft",
+                "frontLeft", "rearRight", "frontRight", false);
 
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-
-        resetEncoders();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
     }
 
     public void init() {
-        //resetEncoders();
+
     }
 
-    public void arcadeDrive(double moveValue, double rotateValue) {
-        double left = moveValue + rotateValue;
-        double right = moveValue - rotateValue;
-
-        if(left > 1) {
-            left = 1;
-        } else if(left < -1) {
-            left = -1;
-        }
-
-        if(right > 1) {
-            right = 1;
-        } else if(right < -1) {
-            right = -1;
-        }
-        tl.addData("ArcadeDriveLeftPower", Math.abs(left)*left*MAX_SPEED);
-        tl.addData("ArcadeDriveRightPower", Math.abs(right)*right*MAX_SPEED);
-        tl.addData("LeftMotor", backLeftMotor);
-        tl.addData("LeftMotorPower", backLeftMotor.getPower());
-        tl.addData("LeftMotorPort", backLeftMotor.getPortNumber());
-        tl.addData("rightMotorPort", backRightMotor.getPortNumber());
-
-
-        setLeftDrive(Math.abs(left)*left*MAX_SPEED);
-        setRightDrive(Math.abs(right)*right*MAX_SPEED);
+    public double getHeading() {
+        return -imu.getAngularOrientation().firstAngle;
     }
-    public void tankDrive(double left, double right) {
-                if(left > 1) {
-            left = 1;
-        } else if(left < -1) {
-            left = -1;
-        }
+    public void update() {
+        slowModeButton.readValue();
 
-        if(right > 1) {
-            right = 1;
-        } else if(right < -1) {
-            right = -1;
-        }
-        setLeftDrive(left);
-        setRightDrive(right);
-    }
+        //speed
 
-    public double getAverageDistance() {
-        return (backLeftMotor.getCurrentPosition()*Parameters.kInchesPerTick + backRightMotor.getCurrentPosition()*Parameters.kInchesPerTick) / 2;
-    }
-    
-    public double getLeftDistance() {
-        return (backLeftMotor.getCurrentPosition()*Parameters.kInchesPerTick);
-    }
-    
-    public double getRightDistance() {
-        return (backRightMotor.getCurrentPosition()*Parameters.kInchesPerTick);
-    }
-    public void update(Telemetry telemetry) {
-        // If RT is pressed slow down
-        if(driverGamepad.right_trigger > 0.2) {
-            MAX_SPEED = .7;
+        if(slowModeButton.isDown()){
+            MAX_SPEED = 0.25;
         } else {
             MAX_SPEED = 1;
         }
-        arcadeDrive(-driverGamepad.left_stick_y, driverGamepad.right_stick_x);
-        //arcadeDrive(humanControl.getDriverRightJoyX(), humanControl.getDriverLeftJoyY());
+
+        strafe = driverGamepad.getLeftX();
+        if(Math.abs(strafe) < 0.5) {
+            strafe = 0;
+        }
+
+        drive = driverGamepad.getLeftY();
+        rotate = driverGamepad.getRightX();
+
+        //Mecanum direction calculation
+
+        // If direction is normal
+        front_left = drive - strafe + rotate;
+        rear_left = drive + strafe + rotate;
+        front_right = drive + strafe - rotate;
+        rear_right = drive - strafe - rotate;
+
+        robotDrive.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robotDrive.frontLeftMotor.setPower(robotDrive.limit(front_left)* MAX_SPEED);
+        robotDrive.backLeftMotor.setPower(robotDrive.limit(rear_left)* MAX_SPEED);
+        robotDrive.frontRightMotor.setPower(robotDrive.limit(front_right)* MAX_SPEED);
+        robotDrive.backRightMotor.setPower(robotDrive.limit(rear_right)* MAX_SPEED);
+
     }
 
-    public void resetEncoders() {
-
-        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+    public void arcadeDrive(double forward, double rotate, boolean squareInputs) {
+        robotDrive.arcadeDrive(forward, rotate, squareInputs);
     }
+
+
     public void reset() {
-        resetEncoders();
-
-
-
-
-    }
-    public void driveForward(double power) {
-
-        backLeftMotor.setPower(power);
-        backRightMotor.setPower(power);
+        imu.getAngularOrientation().firstAngle = 0;
+        robotDrive.resetEncoders();
     }
 
-    public void setRightDrive(double power) {
-        backRightMotor.setPower(power);
-    }
-    public void setLeftDrive(double power) {
-        backLeftMotor.setPower(power);
-    }
 
-    public void stopDriving() {
-
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-    }
 
     public void stop() {
-        stopDriving();
+        robotDrive.stopDriving();
         reset();
     }
+
 
     // Computes the current battery voltage
     public double getBatteryVoltage() {
