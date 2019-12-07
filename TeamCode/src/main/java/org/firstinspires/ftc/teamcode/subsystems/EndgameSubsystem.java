@@ -20,7 +20,7 @@ public class EndgameSubsystem implements Subsystem {
     private ToggleButtonReader foundationToggleButton;
     public final double RIGHT_FOUNDATION_UP = 0.67;
     public final double RIGHT_FOUNDATION_DOWN = 0;
-    public final double LEFT_FOUNDATION_UP = 0.90;
+    public final double LEFT_FOUNDATION_UP = 0.2;
     public final double LEFT_FOUNDATION_DOWN = 0.90;
 
     public Servo leftFoundationServo, rightFoundationServo, zoneServo, capstoneServo;
@@ -67,12 +67,9 @@ public class EndgameSubsystem implements Subsystem {
         }
 
         if(foundationToggleButton.getState()) {
-            moveFoundationUp();
-
-
-        } else {
             moveFoundationDown();
-
+        } else {
+            moveFoundationUp();
         }
         tl.addData("Servo Pos", rightFoundationServo.getPosition());
 

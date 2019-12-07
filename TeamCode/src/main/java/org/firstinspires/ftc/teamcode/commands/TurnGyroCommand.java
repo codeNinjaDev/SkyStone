@@ -16,7 +16,7 @@ public class TurnGyroCommand implements Command {
         this.driveSubsystem = driveSubsystem;
         this.angle = angle;
         this.timeout = timeout;
-        gyroPID = new PIDController(.012, 0.00, 0.0, 0.2, 5);
+        gyroPID = new PIDController(.012, 0.00, 0.0, 0.25, 8);
         gyroPID.setSetpoint(angle);
         timer = new ElapsedTime();
     }
@@ -25,7 +25,7 @@ public class TurnGyroCommand implements Command {
         this.driveSubsystem = driveSubsystem;
         this.angle = angle;
         this.timeout = timeout;
-        gyroPID = new PIDController(.012, 0.00, 0.0, speed, 5);
+        gyroPID = new PIDController(.05, 0.00, 0.0, speed, 10);
         gyroPID.setSetpoint(angle);
         timer = new ElapsedTime();
     }

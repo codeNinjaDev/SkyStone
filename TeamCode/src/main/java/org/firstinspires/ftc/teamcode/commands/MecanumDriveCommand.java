@@ -19,19 +19,19 @@ public class MecanumDriveCommand implements Command {
     private ElapsedTime timer;
     private double timeout;
     Telemetry telemetry;
-
+    boolean distanceReached;
+    boolean noGyroCorrection = false;
     public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double timeout, Telemetry telemetry) {
-
-
 
         this.timeout = timeout;
         this.telemetry = telemetry;
         this.positionVector = Vector2D.polarVector(targetDistance, theta);
-
+        this.driveSubsystem = driveSubsystem;
         timer = new ElapsedTime();
         double defaultSpeed = 24;
         velocityVector = Vector2D.polarVector(defaultSpeed, theta);
     }
+
 
     public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double speed, double timeout, Telemetry telemetry) {
         this.driveSubsystem = driveSubsystem;
@@ -45,6 +45,17 @@ public class MecanumDriveCommand implements Command {
         timer = new ElapsedTime();
     }
 
+    public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double speed, double timeout, boolean noGyroCorrection,Telemetry telemetry) {
+        this.driveSubsystem = driveSubsystem;
+
+        this.timeout = timeout;
+        this.telemetry = telemetry;
+
+        this.positionVector = Vector2D.polarVector(targetDistance, theta);
+        velocityVector = Vector2D.polarVector(speed, theta);
+        this.noGyroCorrection = noGyroCorrection;
+        timer = new ElapsedTime();
+    }
     public MecanumDriveCommand(DriveSubsystem driveSubsystem, double x_distance, double y_distance, double speed, double timeout) {
         this.driveSubsystem = driveSubsystem;
         this.timeout = timeout;
@@ -60,9 +71,9 @@ public class MecanumDriveCommand implements Command {
         timer.startTime();
         driveSubsystem.reset();
 
-        gyroPID = new PIDController(0.08, 0.00001, 0.001, 9, 5);
+        gyroPID = new PIDController(0.42, 0.0001, 0.001, 30, 10);
         gyroPID.setSetpoint(0);
-
+        distanceReached = false;
         positionVector.rotate(-45);
         positionVector.scale(Math.sqrt(2));
 
@@ -75,24 +86,42 @@ public class MecanumDriveCommand implements Command {
     }
     /*** Runs in a loop ***/
     public void update(Telemetry tl) {
-        double rotate = gyroPID.run(driveSubsystem.getHeading());
-        RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backLeftMotor, velocityVector.x + rotate, true);
-        RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontLeftMotor, velocityVector.y + rotate, true);
-        RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backRightMotor, velocityVector.y - rotate, true);
-        RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontRightMotor, velocityVector.x - rotate, true);
+        double rotate = -gyroPID.run(driveSubsystem.getHeading());
+        if(!noGyroCorrection) {
+            if (!distanceReached) {
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backLeftMotor, velocityVector.y + rotate, true);
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontLeftMotor, velocityVector.x + rotate, true);
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backRightMotor, velocityVector.x - rotate, true);
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontRightMotor, velocityVector.y - rotate, true);
+            } else {
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backLeftMotor, rotate, true);
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontLeftMotor, rotate, true);
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backRightMotor, -rotate, true);
+                RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontRightMotor, -rotate, true);
+            }
+        } else {
+            RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backLeftMotor, velocityVector.y, true);
+            RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontLeftMotor, velocityVector.x, true);
+            RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backRightMotor, velocityVector.x, true);
+            RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.frontRightMotor, velocityVector.y, true);
+        }
     }
 
     /*** Checks if command is finished ***/
     public boolean isFinished() {
 
-        boolean fSlashComplete = Math.abs(driveSubsystem.robotDrive.getFSlashAverageDistance()) >= Math.abs(positionVector.x);
-        boolean bSlashComplete = Math.abs(driveSubsystem.robotDrive.getBSlashAverageDistance()) >= Math.abs(positionVector.y);
+        boolean fSlashComplete = Math.abs(driveSubsystem.robotDrive.getFSlashAverageDistance()) >= Math.abs(positionVector.y);
+        boolean bSlashComplete = Math.abs(driveSubsystem.robotDrive.getBSlashAverageDistance()) >= Math.abs(positionVector.x);
 
-        boolean distanceReached = fSlashComplete && bSlashComplete;
+        distanceReached = fSlashComplete && bSlashComplete;
 
         boolean timeoutReached = timer.seconds() >= timeout;
-
-        return distanceReached || timeoutReached;
+        boolean gyro = gyroPID.onTarget();
+        if(noGyroCorrection) {
+            return (distanceReached)|| timeoutReached;
+        } else {
+            return (distanceReached && gyro)|| timeoutReached;
+        }
     }
     /*** Runs when command is finished ***/
     public void finish() {

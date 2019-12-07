@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.libs.RobotDrive;
 import org.firstinspires.ftc.teamcode.libs.Vector2D;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
-public class StrafeCommand {
+public class StrafeCommand implements Command {
     /***
      * PID Controllers for the corner wheels and the heading correction
      */
@@ -24,11 +24,11 @@ public class StrafeCommand {
         this.driveSubsystem = driveSubsystem;
 
 
-        targetForwardSlashPosition = targetDistance;
-        targetBackSlashPosition = -targetDistance;
+        targetForwardSlashPosition = -targetDistance;
+        targetBackSlashPosition = targetDistance;
         PIDFCoefficients drivePID = driveSubsystem.robotDrive.getDriveMotorCoefficients();
         forwardSlashController = new PIDController(drivePID.p * Parameters.kTickPerInches, drivePID.i, drivePID.d, maxSpeed, 5);
-        backSlashController = new PIDController(0.001, 0, 0, maxSpeed, 5);
+        backSlashController = new PIDController(drivePID.p * Parameters.kTickPerInches, drivePID.i, drivePID.d, maxSpeed, 5);
         headingController = new PIDController(0.001, 0, 0, 0.3, 5);
 
         timer = new ElapsedTime();
@@ -52,7 +52,7 @@ public class StrafeCommand {
                 +  RobotDrive.getDistance(driveSubsystem.robotDrive.frontLeftMotor)) / 2.0;
 
         double fSlashOutput = forwardSlashController.run(averageFSlashPosition);
-        double bSlashOutput = backSlashController.run(averageBSlashPosition);
+        double bSlashOutput = backSlashController.run(-averageBSlashPosition);
 
         driveSubsystem.robotDrive.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         driveSubsystem.robotDrive.backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

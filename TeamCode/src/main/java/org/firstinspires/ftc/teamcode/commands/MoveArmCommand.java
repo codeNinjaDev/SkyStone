@@ -24,15 +24,22 @@ public class MoveArmCommand implements Command {
     }
 
     public void reset() {
-
+        arm.leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
     public void update(Telemetry tl) {
-        arm.leftArmMotor.setPower(0.4);
-        arm.rightArmMotor.setPower(0.4);
+        if(position > 0) {
+            arm.leftArmMotor.setPower(0.3);
+            arm.rightArmMotor.setPower(0.3);
+        } else {
+            arm.leftArmMotor.setPower(-0.2);
+            arm.rightArmMotor.setPower(-0.2);
+        }
     }
 
     public boolean isFinished() {
-        return (Math.abs(arm.leftArmMotor.getCurrentPosition()) > Math.abs(position)) || (Math.abs(arm.rightArmMotor.getCurrentPosition()) > Math.abs(position));
+        return (Math.abs(arm.leftArmMotor.getCurrentPosition() - position) < 50) || (Math.abs(arm.rightArmMotor.getCurrentPosition() - position) < 50);
     }
 
     public void finish() {

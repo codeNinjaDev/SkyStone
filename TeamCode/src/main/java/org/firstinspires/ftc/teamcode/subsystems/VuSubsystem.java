@@ -28,7 +28,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class VuSubsystem implements Subsystem {
 
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = FRONT;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
 
     public VectorF translation;
@@ -87,8 +87,8 @@ public class VuSubsystem implements Subsystem {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.phoneCamera = phoneCamera;
-        distance = Double.MAX_VALUE;
-        horizontal_distance = Double.MAX_VALUE;
+        distance = 0;
+        horizontal_distance = 0;
         yaw = Double.MAX_VALUE;
         targetVisible = false;
         translation = null;
@@ -110,9 +110,10 @@ public class VuSubsystem implements Subsystem {
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection   = CAMERA_CHOICE;
         parameters.fillCameraMonitorViewParent = true;
-        CameraDevice.getInstance().setFlashTorchMode(true);
+
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        CameraDevice.getInstance().setFlashTorchMode(true);
 
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
@@ -324,8 +325,8 @@ public class VuSubsystem implements Subsystem {
             //telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         }
         else {
-            distance = Double.MAX_VALUE;
-            horizontal_distance = Double.MAX_VALUE;
+            distance = 0;
+            horizontal_distance = 0;
             yaw = Double.MAX_VALUE;
             telemetry.addData("Visible Target", "none");
         }

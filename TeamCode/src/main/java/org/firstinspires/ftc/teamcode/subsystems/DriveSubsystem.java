@@ -95,7 +95,7 @@ public class DriveSubsystem implements Subsystem {
     }
 
     public double getHeading() {
-        return -imu.getAngularOrientation().firstAngle;
+        return imu.getAngularOrientation().firstAngle;
     }
     public void update() {
         slowModeButton.readValue();
@@ -119,10 +119,10 @@ public class DriveSubsystem implements Subsystem {
         //Mecanum direction calculation
 
         // If direction is normal
-        front_left = drive - strafe + rotate;
-        rear_left = drive + strafe + rotate;
-        front_right = drive + strafe - rotate;
-        rear_right = drive - strafe - rotate;
+        front_left = drive + strafe + rotate;
+        rear_left = drive - strafe + rotate;
+        front_right = drive - strafe - rotate;
+        rear_right = drive + strafe - rotate;
 
         robotDrive.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robotDrive.backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
