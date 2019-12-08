@@ -30,8 +30,8 @@ public class MoveArmCommand implements Command {
 
     public void update(Telemetry tl) {
         if(position > 0) {
-            arm.leftArmMotor.setPower(0.3);
-            arm.rightArmMotor.setPower(0.3);
+            arm.leftArmMotor.setPower(0.45);
+            arm.rightArmMotor.setPower(0.45);
         } else {
             arm.leftArmMotor.setPower(-0.2);
             arm.rightArmMotor.setPower(-0.2);
@@ -39,7 +39,7 @@ public class MoveArmCommand implements Command {
     }
 
     public boolean isFinished() {
-        return (Math.abs(arm.leftArmMotor.getCurrentPosition() - position) < 50) || (Math.abs(arm.rightArmMotor.getCurrentPosition() - position) < 50);
+        return (Math.abs(arm.leftArmMotor.getCurrentPosition() - position) < 90) || (Math.abs(arm.rightArmMotor.getCurrentPosition() - position) < 90);
     }
 
     public void finish() {

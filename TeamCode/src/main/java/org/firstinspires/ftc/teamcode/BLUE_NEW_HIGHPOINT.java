@@ -79,7 +79,7 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
     private CommandRunner liftArm;
     private CommandRunner turnTowardsBuildingZone;
 
-    private CommandRunner strafeIntoBuildingZone;
+    private CommandRunner moveFoundationIntoWall;
     private CommandRunner lowerArm;
     private CommandRunner strafeIntoWall;
 
@@ -93,6 +93,11 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
     SkystoneArm arms;
     EndgameSubsystem foundation;
 
+    private final int FIRST_SKYSTONE = 1;
+    private final int SECOND_SKYSTONE = 2;
+    private final int THIRD_SKYSTONE = 3;
+
+    private int SKYSTONE_POSITION;
     @Override
     public void runOpMode() {
         vu = new VuSubsystem(hardwareMap, telemetry, true);
@@ -120,42 +125,63 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         telemetry.addData("Horizontal Dist", vu.horizontal_distance);
         telemetry.addData("Vertical Dist", vu.distance);
         double firstSkystoneDistance = vu.horizontal_distance;
-
+        if(!vu.targetVisible) {
+            SKYSTONE_POSITION = THIRD_SKYSTONE;
+        } else if(firstSkystoneDistance < 0) {
+            SKYSTONE_POSITION = FIRST_SKYSTONE;
+        } else {
+            SKYSTONE_POSITION = SECOND_SKYSTONE;
+        }
 
         telemetry.update();
         sleep(200);
-        if(!vu.targetVisible) {
-            alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -23, .4, 1.5), telemetry);
-
-        } else if(firstSkystoneDistance < 0) {
-            alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -9, .4, 1), telemetry);
-        } else {
-            alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -19, .4, 1), telemetry);
-
+        // ------------------- NEEDS TUNING ------------
+        switch (SKYSTONE_POSITION) {
+            case THIRD_SKYSTONE:
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -23, .4, 1.5), telemetry);
+                break;
+            case SECOND_SKYSTONE:
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -19, .4, 1), telemetry);
+                break;
+            case FIRST_SKYSTONE:
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -9, .4, 1), telemetry);
+                break;
         }
+
         alignToSkystone.runCommand();
+        // --------------- NEEDS TUNING --------------
         goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 15.5, 0, 34, 1.5, telemetry), telemetry);
         goToSkystone.runCommand();
+
         getSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, 3, .4, 1), telemetry);
         getSkystone.runCommand();
+
         sleep(500);
         claws.closeClaw();
         sleep(500);
+
+        // --------------- NEEDS TUNING --------------
         strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 180, 34, 3, telemetry), telemetry);
         strafeAwaySkystone1.runCommand();
 
         sleep(100);
-        if(!vu.targetVisible) {
-            goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (95), 1, 3), telemetry);
-        } else if(firstSkystoneDistance < 0) {
-            goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (78), 1, 2.5), telemetry);
-        } else {
-            goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (88), 1, 3), telemetry);
 
+        // --------------- NEEDS TUNING --------------
+        switch (SKYSTONE_POSITION) {
+            case THIRD_SKYSTONE:
+                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (95), 1, 3), telemetry);
+                break;
+            case SECOND_SKYSTONE:
+                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (88), 1, 3), telemetry);
+                break;
+            case FIRST_SKYSTONE:
+                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (78), 1, 2.5), telemetry);
+                break;
         }
+
         goToFoundation.runCommand();
         sleep(500);
-        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 300, 1.5), telemetry);
+        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 300, 1.75), telemetry);
         liftArm.runCommand();
         sleep(500);
         turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, -90, .2,2), telemetry);
@@ -169,8 +195,8 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 32, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
-        strafeIntoBuildingZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);
-        strafeIntoBuildingZone.runCommand();
+        moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);
+        moveFoundationIntoWall.runCommand();
 
         foundation.moveFoundationUp();
 
