@@ -112,7 +112,7 @@ public class NewTeleop extends OpMode
     public void start() {
         runtime.reset();
         driveSubsystem.stop();
-
+        driveSubsystem.init();
 
     }
 
@@ -135,7 +135,7 @@ public class NewTeleop extends OpMode
      */
     @Override
     public void stop() {
-        driveSubsystem.stop();
+
     }
 
 }

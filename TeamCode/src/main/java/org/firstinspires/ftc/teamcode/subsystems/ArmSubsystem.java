@@ -22,7 +22,7 @@ public class ArmSubsystem implements Subsystem {
     private ToggleButtonReader intakeToggle;
     private TriggerReader armDownButton;
     private ButtonReader armUpButton;
-    private ButtonReader foldIntakeButton;
+    private ToggleButtonReader foldIntakeButton;
 
     //311
     public ArmSubsystem(SuperGamepad driverGamepad, HardwareMap hardwareMap) {
@@ -43,7 +43,7 @@ public class ArmSubsystem implements Subsystem {
         intakeToggle = new ToggleButtonReader(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER);
         armDownButton = new TriggerReader(driverGamepad, GamepadKeys.Trigger.LEFT_TRIGGER);
         armUpButton = new ButtonReader(driverGamepad, GamepadKeys.Button.LEFT_BUMPER);
-        foldIntakeButton = new ButtonReader(driverGamepad, GamepadKeys.Button.A);
+        foldIntakeButton = new ToggleButtonReader(driverGamepad, GamepadKeys.Button.X);
 
     }
 
@@ -67,7 +67,7 @@ public class ArmSubsystem implements Subsystem {
 
 
 
-        if(!foldIntakeButton.isDown()) {
+        if(!foldIntakeButton.getState()) {
             if (intakeToggle.getState()) {
                 openClaw();
             } else {
@@ -82,10 +82,8 @@ public class ArmSubsystem implements Subsystem {
             leftArmMotor.setPower(-0.25);
             rightArmMotor.setPower(-0.25);
         } else if(armUpButton.isDown()) {
-            if(leftArmMotor.getCurrentPosition() < 1100) {
-                leftArmMotor.setPower(0.4);
-                rightArmMotor.setPower(0.4);
-            }
+            leftArmMotor.setPower(0.4);
+            rightArmMotor.setPower(0.4);
         } else {
             leftArmMotor.setPower(0);
             rightArmMotor.setPower(-0);

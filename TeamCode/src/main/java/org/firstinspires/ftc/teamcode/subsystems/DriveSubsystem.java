@@ -91,7 +91,7 @@ public class DriveSubsystem implements Subsystem {
     }
 
     public void init() {
-
+        robotDrive.setBrakeMode();
     }
 
     public double getHeading() {

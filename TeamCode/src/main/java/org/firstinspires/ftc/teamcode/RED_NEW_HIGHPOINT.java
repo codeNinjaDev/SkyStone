@@ -33,16 +33,12 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.DrivePIDCommand;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
-import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommandSlow;
 import org.firstinspires.ftc.teamcode.commands.MoveArmCommand;
-import org.firstinspires.ftc.teamcode.commands.TrackSkyStoneCommand;
 import org.firstinspires.ftc.teamcode.commands.TurnGyroCommand;
 import org.firstinspires.ftc.teamcode.libs.SuperGamepad;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
@@ -64,8 +60,8 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="HIGHPOINT")  // @Autonomous(...) is the other common choice
-public class BLUE_HIGHPOINT extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RED_NEW_HIGHPOINT")  // @Autonomous(...) is the other common choice
+public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private SuperGamepad driverGamepad;
@@ -84,6 +80,8 @@ public class BLUE_HIGHPOINT extends LinearOpMode {
 
     private CommandRunner strafeIntoBuildingZone;
     private CommandRunner lowerArm;
+    private CommandRunner strafeIntoWall;
+
     private CommandRunner pushPartner;
     private CommandRunner strafeFromWall;
 
@@ -109,14 +107,10 @@ public class BLUE_HIGHPOINT extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        for(int i = 0; i < 10; i++) {
-            vu.update();
-            sleep(10);
-        }
 
         foundation.capstoneServo.setPosition(0.7);
         foundation.moveFoundationUp();
-        strafeCloser = new CommandRunner(this, new MecanumDriveCommand(driveController, 16, 0, 15, 2, telemetry), telemetry);
+        strafeCloser = new CommandRunner(this, new MecanumDriveCommand(driveController, 16, 180, 15, 2, telemetry), telemetry);
         strafeCloser.runCommand();
         for(int i = 0; i < 10; i++) {
             vu.update();
@@ -126,57 +120,72 @@ public class BLUE_HIGHPOINT extends LinearOpMode {
         telemetry.addData("Vertical Dist", vu.distance);
         double firstSkystoneDistance = vu.horizontal_distance;
 
+
         telemetry.update();
-        sleep(500);
-        alignToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, vu.horizontal_distance + 7.8, -90, 20, 2, telemetry), telemetry);
+        sleep(200);
+        if(!vu.targetVisible) {
+            alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -21.5, .4, 1.5), telemetry);
+
+        } else if(firstSkystoneDistance < 0) {
+            alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -9, .4, 1), telemetry);
+        } else {
+            alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -25, .4, 2), telemetry);
+
+        }
         alignToSkystone.runCommand();
-        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, (16.75), 0, 14, 2, telemetry), telemetry);
+        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 14.5, 180, 20, 1.5, telemetry), telemetry);
         goToSkystone.runCommand();
-        getSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, (2), 90, 16, 2, telemetry), telemetry);
+        sleep(300);
+        getSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, 3, .4, 1), telemetry);
         getSkystone.runCommand();
-        sleep(500);
+        sleep(800);
         claws.closeClaw();
         sleep(500);
-        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 180, 16, 2, telemetry), telemetry);
+        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 0, 26, 3, telemetry), telemetry);
         strafeAwaySkystone1.runCommand();
 
         sleep(100);
-        if(firstSkystoneDistance > 4) {
-            goToFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, (62), 90, 34, 3, telemetry), telemetry);
+        if(!vu.targetVisible) {
+            goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (95), .8, 3), telemetry);
+        } else if(firstSkystoneDistance < 0) {
+            goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (78), .8, 2.5), telemetry);
         } else {
-            goToFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, (78), 90, 34, 3, telemetry), telemetry);
+            goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (90), .8, 3), telemetry);
 
         }
+
         goToFoundation.runCommand();
-        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 450, 1.5), telemetry);
+        sleep(600);
+
+        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 350, 1.5), telemetry);
         liftArm.runCommand();
 
-        turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, -90, .2,2), telemetry);
+        turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, 90, .2,2), telemetry);
         turnTowardsFoundation.runCommand();
-        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 20, 90, 18, .8, true,  telemetry), telemetry);
+        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 9, 90, 16, .8, true,  telemetry), telemetry);
         moveTowardsFoundation.runCommand();
         foundation.moveFoundationDown();
         claws.openClaw();
 
-        sleep(1000);
-        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 45, .4, 10), telemetry);
+        sleep(800);
+        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, -35, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
-        strafeIntoBuildingZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 25, 90, 30, 3, true, telemetry), telemetry);
+        strafeIntoBuildingZone = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);
         strafeIntoBuildingZone.runCommand();
 
         foundation.moveFoundationUp();
 
         sleep(50);
-        lowerArm = new CommandRunner(this, new MoveArmCommand(claws, -400, 1.5), telemetry);
+        lowerArm = new CommandRunner(this, new MoveArmCommand(claws, -150, 0.5), telemetry);
         lowerArm.runCommand();
         sleep(50);
 
         CommandRunner alignRobot = new CommandRunner(this, new TurnGyroCommand(driveController, 0, .2, 2), telemetry);
         alignRobot.runCommand();
 
-        park = new CommandRunner(this, new MecanumDriveCommand(driveController, 40, -90, 30,10, telemetry), telemetry);
 
+        park = new CommandRunner(this, new MecanumDriveCommand(driveController, 36, -90, 30,10, telemetry), telemetry);
         park.runCommand();
     }
 

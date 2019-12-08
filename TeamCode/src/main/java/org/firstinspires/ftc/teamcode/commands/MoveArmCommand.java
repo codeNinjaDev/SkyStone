@@ -46,5 +46,7 @@ public class MoveArmCommand implements Command {
         arm.leftArmMotor.setPower(0);
         arm.rightArmMotor.setPower(0);
         arm.reset();
+        arm.leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
