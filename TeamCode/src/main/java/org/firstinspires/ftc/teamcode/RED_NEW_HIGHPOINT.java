@@ -60,7 +60,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RED_NEW_HIGHPOINT")  // @Autonomous(...) is the other common choice
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RED_NEW_HIGHPOINT", group = "29pt")  // @Autonomous(...) is the other common choice
 public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -196,7 +196,6 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 9, 90, 16, .8, true,  telemetry), telemetry);
         moveTowardsFoundation.runCommand();
         foundation.moveFoundationDown();
-        claws.openClaw();
 
         sleep(800);
         turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, -35, .4, 4), telemetry);
@@ -205,6 +204,7 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);
         moveFoundationIntoWall.runCommand();
 
+        claws.openClaw();
         foundation.moveFoundationUp();
 
         sleep(50);
