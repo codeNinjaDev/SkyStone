@@ -33,6 +33,7 @@ public class SuperGamepad {
                 break;
             case DPAD_UP:
                 buttonValue = gamepad.dpad_up;
+                break;
             case BACK:
                 buttonValue = gamepad.back;
                 break;
