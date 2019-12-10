@@ -125,35 +125,32 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         telemetry.addData("Vertical Dist", vu.distance);
         double firstSkystoneDistance = vu.horizontal_distance;
 
-        // --------------- NEEDS TUNING --------------
         if(!vu.targetVisible) {
             SKYSTONE_POSITION = THIRD_SKYSTONE;
         } else if(firstSkystoneDistance < 0) {
-            SKYSTONE_POSITION = FIRST_SKYSTONE;
-        } else {
             SKYSTONE_POSITION = SECOND_SKYSTONE;
+        } else {
+            SKYSTONE_POSITION = FIRST_SKYSTONE;
         }
 
         telemetry.update();
         sleep(200);
 
-        // ------------------- NEEDS TUNING ------------
         switch (SKYSTONE_POSITION) {
             case THIRD_SKYSTONE:
-                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -23, .4, 1.5), telemetry);
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -22, .4, 1.5), telemetry);
                 break;
             case SECOND_SKYSTONE:
-                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -19, .4, 1), telemetry);
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -13, .4, 1), telemetry);
                 break;
             case FIRST_SKYSTONE:
-                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -9, .4, 1), telemetry);
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -5.5, .4, 1), telemetry);
                 break;
         }
 
         alignToSkystone.runCommand();
 
-        // --------------- NEEDS TUNING --------------
-        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 14.5, 180, 20, 1.5, telemetry), telemetry);
+        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 15.5, 180, 34, 1.5, telemetry), telemetry);
         goToSkystone.runCommand();
 
         sleep(300);
@@ -164,36 +161,33 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         claws.closeClaw();
         sleep(500);
 
-        // --------------- NEEDS TUNING --------------
-        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 0, 26, 3, telemetry), telemetry);
+        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 0, 34, 3, telemetry), telemetry);
         strafeAwaySkystone1.runCommand();
 
         sleep(100);
 
-        // --------------- NEEDS TUNING --------------
         switch (SKYSTONE_POSITION) {
             case THIRD_SKYSTONE:
-                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (95), 1, 3), telemetry);
+                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (92), 1, 3), telemetry);
                 break;
             case SECOND_SKYSTONE:
-                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (88), 1, 3), telemetry);
+                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (86), 1, 3), telemetry);
                 break;
             case FIRST_SKYSTONE:
-                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (78), 1, 2.5), telemetry);
+                goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (75), 1, 2.5), telemetry);
                 break;
         }
 
         goToFoundation.runCommand();
         sleep(600);
 
-        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 350, 1.5), telemetry);
+        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 350, 1.75), telemetry);
         liftArm.runCommand();
 
-        turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, 90, .2,2), telemetry);
+        turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, 90, .2,3), telemetry);
         turnTowardsFoundation.runCommand();
 
-        // --------------- NEEDS TUNING --------------
-        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 9, 90, 16, .8, true,  telemetry), telemetry);
+        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 90, 16, .8, true,  telemetry), telemetry);
         moveTowardsFoundation.runCommand();
         foundation.moveFoundationDown();
 
@@ -218,6 +212,4 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         park = new CommandRunner(this, new MecanumDriveCommand(driveController, 36, -90, 30,10, telemetry), telemetry);
         park.runCommand();
     }
-
-
 }

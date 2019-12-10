@@ -1,8 +1,3 @@
-//strafe right
-//go forward
-//same for blue skystone
-//opposite strafing for red skystone & blue foundation
-
 package org.firstinspires.ftc.teamcode;
 
 /*
