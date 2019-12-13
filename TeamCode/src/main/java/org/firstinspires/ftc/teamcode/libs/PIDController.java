@@ -47,7 +47,7 @@ public class PIDController {
         currentError = setpoint - feedback;
         summation += currentError * I;
         deltaError = currentError - lastError;
-        output = P * currentError + I * summation + D * (deltaError / deltaTime);
+        output = P * currentError + I * summation * deltaTime + D * (deltaError / deltaTime);
         lastError = currentError;
         output += aff;
         if(output > maxRange)
