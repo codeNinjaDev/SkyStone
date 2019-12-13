@@ -161,7 +161,7 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         claws.closeClaw();
         sleep(500);
 
-        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 0, 34, 3, telemetry), telemetry);
+        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 13.5, 0, 34, 3, telemetry), telemetry);
         strafeAwaySkystone1.runCommand();
 
         sleep(100);

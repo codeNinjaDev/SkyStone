@@ -102,16 +102,16 @@ public class ArmSubsystem implements Subsystem {
         //left low is closed
         leftIntake.setPosition(.33);
         // right high is open
-        rightIntake.setPosition(.85);
+        rightIntake.setPosition(0.91);
     }
 
     public void openClaw() {
         leftIntake.setPosition(.5);
-        rightIntake.setPosition(.7);
+        rightIntake.setPosition(.72);
     }
 
     public void stowClaws() {
         leftIntake.setPosition(1);
-        rightIntake.setPosition(.18);
+        rightIntake.setPosition(.23);
     }
 }
