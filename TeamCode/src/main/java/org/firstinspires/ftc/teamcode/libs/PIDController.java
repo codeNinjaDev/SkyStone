@@ -9,6 +9,9 @@ public class PIDController {
     double deltaError;
     double output;
     double aff;
+
+    double lastTime;
+
     public PIDController(double P, double I, double D, double maxRange, double percentTolerance) {
         this.P = P;
         this.I = I;
@@ -19,24 +22,40 @@ public class PIDController {
         this.maxRange = maxRange;
         this.percentTolerance = percentTolerance;
         aff = 0;
+        lastTime = 0;
     }
 
-    public void setSetpoint(double setpoint) {
+    public void setSetpoint(double setpoint, boolean startTimer) {
         this.setpoint = setpoint;
+
+        if(startTimer) {
+            setTimestamp();
+        }
+    }
+
+
+    public void setTimestamp() {
+        lastTime = System.nanoTime();
     }
 
     public double run(double feedback) {
         this.feedback = feedback;
+
+        // Convert to ms
+        double deltaTime = (System.nanoTime() - lastTime) / 1000000.0;
+
         currentError = setpoint - feedback;
         summation += currentError * I;
         deltaError = currentError - lastError;
-        output = P * currentError + I * summation + D * deltaError;
+        output = P * currentError + I * summation * deltaTime + D * (deltaError / deltaTime);
         lastError = currentError;
         output += aff;
         if(output > maxRange)
             output = maxRange;
         else if(output < -maxRange)
             output = -maxRange;
+        
+        setTimestamp();
         return output;
     }
     public void setArbitraryFeedForward(double ff) {

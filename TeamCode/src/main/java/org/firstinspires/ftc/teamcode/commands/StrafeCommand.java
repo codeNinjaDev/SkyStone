@@ -39,14 +39,16 @@ public class StrafeCommand implements Command {
     }
 
     public void init() {
-        forwardSlashController.setSetpoint(targetForwardSlashPosition);
-        backSlashController.setSetpoint(targetBackSlashPosition);
-        headingController.setSetpoint(0);
+
         driveSubsystem.reset();
         distanceReached = false;
 
         timer.reset();
         timer.startTime();
+
+        forwardSlashController.setSetpoint(targetForwardSlashPosition, true);
+        backSlashController.setSetpoint(targetBackSlashPosition, true);
+        headingController.setSetpoint(0, true);
     }
 
     public void update(Telemetry tl) {

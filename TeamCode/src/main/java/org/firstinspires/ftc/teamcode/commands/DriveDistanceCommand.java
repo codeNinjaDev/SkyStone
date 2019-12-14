@@ -51,7 +51,7 @@ public class DriveDistanceCommand implements Command {
     @Override
     public void init() {
         driveSubsystem.reset();
-        pidController.setSetpoint(targetVelocity);
+        pidController.setSetpoint(targetVelocity, true);
         timer.reset();
 
 
