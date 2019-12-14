@@ -28,7 +28,6 @@ import org.firstinspires.ftc.teamcode.libs.Vector2D;
 
 public class DriveSubsystem implements Subsystem {
     private SuperGamepad driverGamepad;
-    private PIDController vuController;
     double MAX_SPEED = 1;
     private Telemetry tl;
     public HardwareMap hardwareMap = null;
@@ -70,8 +69,7 @@ public class DriveSubsystem implements Subsystem {
         this.tl = tl;
         this.hardwareMap = hardwareMap;
         this.yaw = Double.MAX_VALUE;
-        vuController = new PIDController(.1, 0, .05, .2, 5);
-        vuController.setSetpoint(0);
+
         slowModeButton = new TriggerReader(driverGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER);
 
         robotDrive = new RobotDrive(hardwareMap, "rearLeft",

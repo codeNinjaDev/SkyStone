@@ -192,7 +192,7 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         foundation.moveFoundationDown();
 
         sleep(800);
-        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 35, .4, 4), telemetry);
+        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 30, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
         moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);

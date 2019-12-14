@@ -66,8 +66,8 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RedParkFoundation", group = "parking")  // @Autonomous(...) is the other common choice
-public class RedParkFoundation extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="RedPark F Side", group = "parking")  // @Autonomous(...) is the other common choice
+public class RedPark extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private SuperGamepad driverGamepad;
