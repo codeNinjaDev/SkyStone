@@ -45,9 +45,10 @@ public class PIDController {
         double deltaTime = (System.nanoTime() - lastTime) / 1000000.0;
 
         currentError = setpoint - feedback;
-        summation += currentError * I;
         deltaError = currentError - lastError;
-        output = P * currentError + I * summation * deltaTime + D * (deltaError / deltaTime);
+        summation += (deltaError * deltaTime);
+
+        output = P * currentError + I * summation + D * (deltaError / deltaTime);
         lastError = currentError;
         output += aff;
         if(output > maxRange)
