@@ -29,10 +29,9 @@ public class StrafeCommand implements Command {
 
         targetForwardSlashPosition = targetDistance;
         targetBackSlashPosition = -targetDistance;
-        PIDFCoefficients drivePID = driveSubsystem.robotDrive.getDriveMotorCoefficients();
-        forwardSlashController = new PIDController(0.04, 0.00001, 0.001, maxSpeed, 5);
-        backSlashController = new PIDController(0.04, 0.00001, 0.001, maxSpeed, 5);
-        headingController = new PIDController(0.03, 0, 0, 0.3, 5);
+        forwardSlashController = new PIDController(0.04, 0.00001, 0.001, maxSpeed, 1);
+        backSlashController = new PIDController(0.04, 0.00001, 0.001, maxSpeed, 1);
+        headingController = new PIDController(0.03, 0, 0, 0.3, 3);
 
         timer = new ElapsedTime();
         this.timeout = timeout;

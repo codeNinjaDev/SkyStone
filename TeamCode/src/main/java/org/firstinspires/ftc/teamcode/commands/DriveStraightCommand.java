@@ -24,8 +24,8 @@ public class DriveStraightCommand implements Command {
     public DriveStraightCommand(DriveSubsystem driveSubsystem, double distance, double speed
             , double timeout, boolean globalHeading) {
         this.driveSubsystem = driveSubsystem;
-        positionPIDController = new PIDController(0.08, 0, .001, speed, 5);
-        headingController = new PIDController(0.42, 0.000001, 0.001, 30, 10);
+        positionPIDController = new PIDController(0.08, 0, .001, speed, 1);
+        headingController = new PIDController(0.42, 0.000001, 0.001, 30, 3);
         this.globalHeading = globalHeading;
 
         this.timeout = timeout;

@@ -81,12 +81,13 @@ public class MecanumDriveCommand implements Command {
         //Because magnitude of [1, 1] vector is sqrt(2)
         velocityVector.scale(Math.sqrt(2));
 
-        gyroPID = new PIDController(0.42, 0.000001, 0.001, 30, 10);
+        gyroPID = new PIDController(0.42, 0.000001, 0.001, 30, 5);
         gyroPID.setSetpoint(0, true);
     }
     /*** Runs in a loop ***/
     public void update(Telemetry tl) {
         double rotate = -gyroPID.run(driveSubsystem.getHeading());
+
         if(!noGyroCorrection) {
             if (!distanceReached) {
                 RobotDrive.setMotorVelocity(driveSubsystem.robotDrive.backLeftMotor, velocityVector.y + rotate, true);

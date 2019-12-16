@@ -5,14 +5,14 @@ package org.firstinspires.ftc.teamcode.libs;
  */
 
 public class PIDController {
-    double P, I, D, maxRange, percentTolerance, setpoint, summation, lastError, currentError, feedback;
+    double P, I, D, maxRange, absoluteTolerance, setpoint, summation, lastError, currentError, feedback;
     double deltaError;
     double output;
     double aff;
 
     double lastTime;
 
-    public PIDController(double P, double I, double D, double maxRange, double percentTolerance) {
+    public PIDController(double P, double I, double D, double maxRange, double absoluteTolerance) {
         this.P = P;
         this.I = I;
         this.D = D;
@@ -20,7 +20,7 @@ public class PIDController {
         feedback = 0;
         output = 0;
         this.maxRange = maxRange;
-        this.percentTolerance = percentTolerance;
+        this.absoluteTolerance = absoluteTolerance;
         aff = 0;
         lastTime = 0;
     }
@@ -63,8 +63,7 @@ public class PIDController {
     }
     public boolean onTarget() {
         currentError = setpoint - feedback;
-        double percent = percentTolerance * .01;
-        if(Math.abs(currentError) < setpoint*percent)
+        if(Math.abs(currentError) < absoluteTolerance)
             return true;
         else
             return false;
