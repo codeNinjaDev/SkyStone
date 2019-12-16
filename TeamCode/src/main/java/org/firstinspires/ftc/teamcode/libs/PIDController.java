@@ -46,7 +46,7 @@ public class PIDController {
 
         currentError = setpoint - feedback;
         deltaError = currentError - lastError;
-        summation += (deltaError * deltaTime);
+        summation += (currentError * deltaTime);
 
         output = P * currentError + I * summation + D * (deltaError / deltaTime);
         lastError = currentError;
