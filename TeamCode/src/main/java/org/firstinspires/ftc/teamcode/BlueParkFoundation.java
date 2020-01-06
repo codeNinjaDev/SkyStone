@@ -62,7 +62,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="BluePark", group = "parking")  // @Autonomous(...) is the other common choice
-public class BluePark extends LinearOpMode {
+public class BlueParkFoundation extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private SuperGamepad driverGamepad;

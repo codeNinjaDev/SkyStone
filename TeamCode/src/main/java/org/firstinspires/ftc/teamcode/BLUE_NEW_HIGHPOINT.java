@@ -82,6 +82,7 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
 
     private CommandRunner moveFoundationIntoWall;
     private CommandRunner lowerArm;
+
     private CommandRunner strafeIntoWall;
 
     private CommandRunner pushPartner;
@@ -184,14 +185,19 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         sleep(500);
         liftArm = new CommandRunner(this, new MoveArmCommand(claws, 350, 1.75), telemetry);
         liftArm.runCommand();
+
         sleep(500);
         turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, -90, .2,2), telemetry);
         turnTowardsFoundation.runCommand();
         moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 90, 16, .8, true,  telemetry), telemetry);
         moveTowardsFoundation.runCommand();
         foundation.moveFoundationDown();
-
         sleep(800);
+
+        CommandRunner backUp;
+        backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -3, .4, 1), telemetry);
+        backUp.runCommand();
+        sleep(50);
         turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 30, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
