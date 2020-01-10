@@ -134,7 +134,7 @@ public class BlueSkystone15 extends LinearOpMode {
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -13.75, .4, 1), telemetry);
                 break;
             case FIRST_SKYSTONE:
-                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -5.0, .4, 1), telemetry);
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -5.05, .4, 1), telemetry);
                 break;
         }
 
@@ -150,7 +150,7 @@ public class BlueSkystone15 extends LinearOpMode {
         claws.closeClaw();
         sleep(500);
 
-        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 13.5, 180, 34, 3, telemetry), telemetry);
+        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 13.6, 180, 34, 3, telemetry), telemetry);
         strafeAwaySkystone1.runCommand();
 
         sleep(100);
@@ -163,7 +163,7 @@ public class BlueSkystone15 extends LinearOpMode {
                 goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (50.75), 1, 3), telemetry);
                 break;
             case FIRST_SKYSTONE:
-                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (39.5), 1, 2.5), telemetry);
+                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (40.0), 1, 2.5), telemetry);
                 break;
         }
 
@@ -178,7 +178,7 @@ public class BlueSkystone15 extends LinearOpMode {
         CommandRunner alignRobot = new CommandRunner(this, new TurnGyroCommand(driveController, 0, .2, 2), telemetry);
         alignRobot.runCommand();
 
-        park = new CommandRunner(this, new MecanumDriveCommand(driveController, 5, -90, 30,10, telemetry), telemetry);
+        park = new CommandRunner(this, new MecanumDriveCommand(driveController, 8, -90, 30,10, telemetry), telemetry);
         park.runCommand();
     }
 }

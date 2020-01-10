@@ -147,7 +147,7 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -13.75, .4, 1), telemetry);
                 break;
             case FIRST_SKYSTONE:
-                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -5.0, .4, 1), telemetry);
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -5.05, .4, 1), telemetry);
                 break;
         }
 
