@@ -71,6 +71,7 @@ public class BlueFoundation15 extends LinearOpMode {
     private CommandRunner getOffWall;
     private CommandRunner strafeToCenter;
     private CommandRunner goToFoundation;
+    private CommandRunner backUp;
     private CommandRunner turnTowardsBuildingZone;
 
     private CommandRunner moveFoundationIntoWall;
@@ -113,6 +114,9 @@ public class BlueFoundation15 extends LinearOpMode {
         foundation.moveFoundationDown();
 
         sleep(800);
+
+        backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -5, .4, 1), telemetry);
+        backUp.runCommand();
 
         turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 115, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();

@@ -183,7 +183,7 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
 
         goToFoundation.runCommand();
         sleep(500);
-        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 350, 1.75), telemetry);
+        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 425, 1.75), telemetry);
         liftArm.runCommand();
 
         sleep(500);

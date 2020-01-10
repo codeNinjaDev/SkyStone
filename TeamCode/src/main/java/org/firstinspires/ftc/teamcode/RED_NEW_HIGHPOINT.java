@@ -181,7 +181,7 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         goToFoundation.runCommand();
         sleep(600);
 
-        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 350, 1.75), telemetry);
+        liftArm = new CommandRunner(this, new MoveArmCommand(claws, 425, 1.75), telemetry);
         liftArm.runCommand();
 
         turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, 90, .2,3), telemetry);

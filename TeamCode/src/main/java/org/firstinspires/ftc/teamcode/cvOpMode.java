@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -19,7 +20,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="CVOpMode", group = "Test")  // @Autonomous(...) is the other common choice
 public class cvOpMode extends LinearOpMode {
     SkystoneFinder detector;

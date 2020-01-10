@@ -157,13 +157,13 @@ public class BlueSkystone15 extends LinearOpMode {
 
         switch (SKYSTONE_POSITION) {
             case THIRD_SKYSTONE:
-                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (51.5), 1, 3), telemetry);
+                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (56.5), 1, 3), telemetry);
                 break;
             case SECOND_SKYSTONE:
-                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (45.75), 1, 3), telemetry);
+                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (50.75), 1, 3), telemetry);
                 break;
             case FIRST_SKYSTONE:
-                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (34.5), 1, 2.5), telemetry);
+                goAcrossTape = new CommandRunner(this, new DrivePIDCommand(driveController, (39.5), 1, 2.5), telemetry);
                 break;
         }
 
