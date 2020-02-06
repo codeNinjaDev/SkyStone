@@ -150,7 +150,7 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
         alignToSkystone.runCommand();
 
-        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 15.5, 180, 34, 1.5, telemetry), telemetry);
+        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 15.25, 180, 34, 1.5, telemetry), telemetry);
         goToSkystone.runCommand();
 
         sleep(300);
@@ -208,7 +208,8 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
         CommandRunner alignRobot = new CommandRunner(this, new TurnGyroCommand(driveController, 0, .2, 2), telemetry);
         alignRobot.runCommand();
-
+        CommandRunner giveSpace = new CommandRunner(this, new MecanumDriveCommand(driveController, 2, 180, 30,1, telemetry), telemetry);
+        giveSpace.runCommand();
         park = new CommandRunner(this, new MecanumDriveCommand(driveController, 36, -90, 30,10, telemetry), telemetry);
         park.runCommand();
     }

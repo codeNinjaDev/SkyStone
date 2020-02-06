@@ -164,7 +164,7 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         sleep(500);
 
 
-        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 13.5, 180, 34, 3, telemetry), telemetry);
+        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12.5, 180, 34, 3, telemetry), telemetry);
         strafeAwaySkystone1.runCommand();
 
         sleep(100);
@@ -189,16 +189,16 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         sleep(500);
         turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, -90, .2,2), telemetry);
         turnTowardsFoundation.runCommand();
-        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 90, 16, .8, true,  telemetry), telemetry);
+        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 22, 90, 16, .8, true,  telemetry), telemetry);
         moveTowardsFoundation.runCommand();
         foundation.moveFoundationDown();
         sleep(800);
 
         CommandRunner backUp;
-        backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -3, .4, 1), telemetry);
+        backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -7, .4, 1), telemetry);
         backUp.runCommand();
         sleep(50);
-        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 30, .4, 4), telemetry);
+        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 20, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
         moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);
@@ -214,7 +214,8 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
 
         CommandRunner alignRobot = new CommandRunner(this, new TurnGyroCommand(driveController, 0, .2, 2), telemetry);
         alignRobot.runCommand();
-
+        CommandRunner giveSpace = new CommandRunner(this, new MecanumDriveCommand(driveController, 2, 0, 30,1, telemetry), telemetry);
+        giveSpace.runCommand();
         park = new CommandRunner(this, new MecanumDriveCommand(driveController, 36, -90, 30,10, telemetry), telemetry);
         park.runCommand();
     }
