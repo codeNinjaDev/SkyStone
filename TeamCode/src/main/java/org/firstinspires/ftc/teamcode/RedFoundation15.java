@@ -108,7 +108,7 @@ public class RedFoundation15 extends LinearOpMode {
         strafeToCenter = new CommandRunner(this, new MecanumDriveCommand(driveController, 5, 0, 15, 2, telemetry), telemetry);
         strafeToCenter.runCommand();
 
-        goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (20), 0.5, 2.5), telemetry);
+        goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (20), 0.75, 1.5), telemetry);
         goToFoundation.runCommand();
         sleep(600);
 
@@ -119,7 +119,7 @@ public class RedFoundation15 extends LinearOpMode {
         backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -5, .4, 1), telemetry);
         backUp.runCommand();
 
-        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, -115, .4, 4), telemetry);
+        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, -100, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
         moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 55, 90, 30, 3, true, telemetry), telemetry);
@@ -131,7 +131,8 @@ public class RedFoundation15 extends LinearOpMode {
         lowerArm = new CommandRunner(this, new MoveArmCommand(claws, -150, 0.5), telemetry);
         lowerArm.runCommand();
         sleep(50);
-
+        CommandRunner strafeIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 26, 0, 2, -90, true), telemetry);
+        strafeIntoWall.runCommand();
         park = new CommandRunner(this, new DrivePIDCommand(driveController, -40, .4, 3), telemetry);
         park.runCommand();
     }

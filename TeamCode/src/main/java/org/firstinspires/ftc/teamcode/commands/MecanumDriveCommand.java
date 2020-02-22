@@ -21,6 +21,7 @@ public class MecanumDriveCommand implements Command {
     Telemetry telemetry;
     boolean distanceReached;
     boolean noGyroCorrection = false;
+    double setpoint;
     public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double timeout, Telemetry telemetry) {
 
         this.timeout = timeout;
@@ -30,6 +31,7 @@ public class MecanumDriveCommand implements Command {
         timer = new ElapsedTime();
         double defaultSpeed = 24;
         velocityVector = Vector2D.polarVector(defaultSpeed, theta);
+        setpoint = 0;
     }
 
 
@@ -43,6 +45,7 @@ public class MecanumDriveCommand implements Command {
         velocityVector = Vector2D.polarVector(speed, theta);
 
         timer = new ElapsedTime();
+        setpoint = 0;
     }
 
     public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double speed, double timeout, boolean noGyroCorrection,Telemetry telemetry) {
@@ -62,9 +65,22 @@ public class MecanumDriveCommand implements Command {
         timer = new ElapsedTime();
         this.positionVector = new Vector2D(x_distance, y_distance);
         velocityVector = Vector2D.polarVector(speed, Math.atan2(x_distance, y_distance));
-
+        setpoint = 0;
 
     }
+    public MecanumDriveCommand(DriveSubsystem driveSubsystem, double targetDistance, double theta, double timeout, double theta1, boolean GyroCorrect) {
+
+        this.timeout = timeout;
+        this.telemetry = telemetry;
+        this.positionVector = Vector2D.polarVector(targetDistance, theta);
+        this.driveSubsystem = driveSubsystem;
+        timer = new ElapsedTime();
+        double defaultSpeed = 24;
+        velocityVector = Vector2D.polarVector(defaultSpeed, theta);
+        setpoint = theta1;
+        noGyroCorrection = false;
+    }
+
     /*** Configures everything ***/
     public void init() {
         timer.reset();
@@ -72,7 +88,7 @@ public class MecanumDriveCommand implements Command {
         driveSubsystem.reset();
 
         gyroPID = new PIDController(0.42, 0.0001, 0.001, 30, 10);
-        gyroPID.setSetpoint(0);
+        gyroPID.setSetpoint(setpoint);
         distanceReached = false;
         positionVector.rotate(-45);
         positionVector.scale(Math.sqrt(2));

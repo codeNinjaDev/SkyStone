@@ -79,21 +79,22 @@ public class ArmSubsystem implements Subsystem {
             stowClaws();
         }
 
-
+        double multiplier = 1;
         if(slowMode.getState()) {
             leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            multiplier *= 0.5;
         } else {
             leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
         if(armDownButton.isDown()) {
-            leftArmMotor.setPower(-0.4);
-            rightArmMotor.setPower(-0.4);
+            leftArmMotor.setPower(-0.45);
+            rightArmMotor.setPower(-0.45);
         } else if(armUpButton.isDown()) {
-            leftArmMotor.setPower(0.5);
-            rightArmMotor.setPower(0.5);
+            leftArmMotor.setPower(0.65 * multiplier);
+            rightArmMotor.setPower(0.65 * multiplier);
         } else {
             leftArmMotor.setPower(0);
             rightArmMotor.setPower(0);

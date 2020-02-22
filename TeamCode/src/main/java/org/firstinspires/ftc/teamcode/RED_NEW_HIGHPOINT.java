@@ -126,10 +126,10 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
         switch (position) {
             case LEFT_STONE:
-                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -23, .4, 1.5), telemetry);
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -23.5, .4, 1.5), telemetry);
                 break;
             case CENTER_STONE:
-                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -15, .4, 1), telemetry);
+                alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -15.5, .4, 1), telemetry);
                 break;
             case RIGHT_STONE:
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -6.5, .4, 1), telemetry);

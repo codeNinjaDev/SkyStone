@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.Command;
 import org.firstinspires.ftc.teamcode.commands.DrivePIDCommand;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.MoveArmCommand;
@@ -105,7 +106,7 @@ public class BlueFoundation15 extends LinearOpMode {
         getOffWall = new CommandRunner(this, new DrivePIDCommand(driveController, 5, .4, 1), telemetry);
         getOffWall.runCommand();
 
-        strafeToCenter = new CommandRunner(this, new MecanumDriveCommand(driveController, 5, 180, 15, 2, telemetry), telemetry);
+        strafeToCenter = new CommandRunner(this, new MecanumDriveCommand(driveController, 5, 180, 15, 1, telemetry), telemetry);
         strafeToCenter.runCommand();
 
         goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (22), 0.5, 2.5), telemetry);
@@ -116,13 +117,13 @@ public class BlueFoundation15 extends LinearOpMode {
 
         sleep(800);
 
-        backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -5, .4, 1), telemetry);
+        backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -5, .8, 1), telemetry);
         backUp.runCommand();
 
-        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 115, .4, 4), telemetry);
+        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 100, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
-        moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 55, 90, 30, 3, true, telemetry), telemetry);
+        moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 40, 90, 30, 3, true, telemetry), telemetry);
         moveFoundationIntoWall.runCommand();
 
         foundation.moveFoundationUp();
@@ -132,8 +133,10 @@ public class BlueFoundation15 extends LinearOpMode {
         lowerArm.runCommand();
         sleep(50);
 
+        CommandRunner strafeIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 26, 180, 2, 90, true), telemetry);
+        strafeIntoWall.runCommand();
 
-        park = new CommandRunner(this, new DrivePIDCommand(driveController, -40, .4, 3), telemetry);
+        park = new CommandRunner(this, new DrivePIDCommand(driveController, -40, .8, 3), telemetry);
         park.runCommand();
     }
 }
