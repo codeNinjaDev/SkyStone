@@ -121,13 +121,20 @@ public class NewTeleop extends OpMode
      */
     @Override
     public void loop() {
+        try {
+            driveSubsystem.update();
+            endgameSubsystem.update();
+            skystoneArm.update();
+            intake.update();
+            telemetry.addData("Running", "True");
+        } catch (Exception e) {
+            driveSubsystem.robotDrive.stopDriving();
+            telemetry.addData("Exception: ", e);
 
-        driveSubsystem.update();
-        endgameSubsystem.update();
-        skystoneArm.update();
-        intake.update();
-        telemetry.addData("Running", "True");
+            telemetry.update();
+        }
         telemetry.update();
+
     }
 
     /*
@@ -135,6 +142,7 @@ public class NewTeleop extends OpMode
      */
     @Override
     public void stop() {
+        driveSubsystem.robotDrive.stopDriving();
 
     }
 

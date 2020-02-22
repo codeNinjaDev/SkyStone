@@ -33,6 +33,7 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import com.arcrobotics.ftclib.vision.SkystoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -45,6 +46,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SkystoneArm;
+import org.firstinspires.ftc.teamcode.subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VuSubsystem;
 //import org.firstinspires.ftc.teamcode.subsystems.SkystoneArm;
 
@@ -86,7 +88,7 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
     private CommandRunner strafeFromWall;
 
     private CommandRunner park;
-    VuSubsystem vu;
+    VisionSubsystem visionSubsystem;
 
     DriveSubsystem driveController;
     SkystoneArm arms;
@@ -99,8 +101,7 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
     private int SKYSTONE_POSITION;
     @Override
     public void runOpMode() {
-        vu = new VuSubsystem(hardwareMap, telemetry, true);
-        vu.init();
+        visionSubsystem = new VisionSubsystem(hardwareMap);
 
         driverGamepad = new SuperGamepad(gamepad1);
         driveController = new DriveSubsystem(hardwareMap, driverGamepad, telemetry);
@@ -112,38 +113,25 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        SkystoneDetector.SkystonePosition position = visionSubsystem.getSkystonePosition();
 
         foundation.capstoneServo.setPosition(0.7);
         foundation.moveFoundationUp();
         strafeCloser = new CommandRunner(this, new MecanumDriveCommand(driveController, 16, 180, 15, 2, telemetry), telemetry);
         strafeCloser.runCommand();
-        for(int i = 0; i < 10; i++) {
-            vu.update();
-            sleep(50);
-        }
-        telemetry.addData("Horizontal Dist", vu.horizontal_distance);
-        telemetry.addData("Vertical Dist", vu.distance);
-        double firstSkystoneDistance = vu.horizontal_distance;
 
-        if(!vu.targetVisible) {
-            SKYSTONE_POSITION = THIRD_SKYSTONE;
-        } else if(firstSkystoneDistance < 0) {
-            SKYSTONE_POSITION = SECOND_SKYSTONE;
-        } else {
-            SKYSTONE_POSITION = FIRST_SKYSTONE;
-        }
 
         telemetry.update();
         sleep(200);
 
-        switch (SKYSTONE_POSITION) {
-            case THIRD_SKYSTONE:
+        switch (position) {
+            case RIGHT_STONE:
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -22, .4, 1.5), telemetry);
                 break;
-            case SECOND_SKYSTONE:
+            case CENTER_STONE:
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -13, .4, 1), telemetry);
                 break;
-            case FIRST_SKYSTONE:
+            case LEFT_STONE:
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -5.5, .4, 1), telemetry);
                 break;
         }
@@ -166,14 +154,14 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
         sleep(100);
 
-        switch (SKYSTONE_POSITION) {
-            case THIRD_SKYSTONE:
+        switch (position) {
+            case RIGHT_STONE:
                 goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (92), 1, 3), telemetry);
                 break;
-            case SECOND_SKYSTONE:
+            case CENTER_STONE:
                 goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (86), 1, 3), telemetry);
                 break;
-            case FIRST_SKYSTONE:
+            case LEFT_STONE:
                 goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (75), 1, 2.5), telemetry);
                 break;
         }
