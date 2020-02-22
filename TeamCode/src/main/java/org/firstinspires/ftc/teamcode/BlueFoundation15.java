@@ -36,6 +36,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.DrivePIDCommand;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.MoveArmCommand;
@@ -107,7 +108,7 @@ public class BlueFoundation15 extends LinearOpMode {
         strafeToCenter = new CommandRunner(this, new MecanumDriveCommand(driveController, 5, 180, 15, 2, telemetry), telemetry);
         strafeToCenter.runCommand();
 
-        goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (20), 0.5, 2.5), telemetry);
+        goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (22), 0.5, 2.5), telemetry);
         goToFoundation.runCommand();
         sleep(600);
 
@@ -130,6 +131,7 @@ public class BlueFoundation15 extends LinearOpMode {
         lowerArm = new CommandRunner(this, new MoveArmCommand(claws, -150, 0.5), telemetry);
         lowerArm.runCommand();
         sleep(50);
+
 
         park = new CommandRunner(this, new DrivePIDCommand(driveController, -40, .4, 3), telemetry);
         park.runCommand();

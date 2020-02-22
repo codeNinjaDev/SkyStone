@@ -19,9 +19,9 @@ public class EndgameSubsystem implements Subsystem {
     private ButtonReader capstoneButton;
     private ToggleButtonReader foundationToggleButton;
     public final double RIGHT_FOUNDATION_UP = 0.67;
-    public final double RIGHT_FOUNDATION_DOWN = 0;
-    public final double LEFT_FOUNDATION_UP = 0.2;
-    public final double LEFT_FOUNDATION_DOWN = 0.90;
+    public final double RIGHT_FOUNDATION_DOWN = 0.15;
+    public final double LEFT_FOUNDATION_UP = 0.35;
+    public final double LEFT_FOUNDATION_DOWN = 0.68;
 
     public Servo leftFoundationServo, rightFoundationServo, zoneServo, capstoneServo;
     Telemetry tl;
@@ -68,15 +68,16 @@ public class EndgameSubsystem implements Subsystem {
 
         if(foundationToggleButton.getState()) {
             moveFoundationDown();
+
         } else {
             moveFoundationUp();
         }
         tl.addData("Servo Pos", rightFoundationServo.getPosition());
 
         if(capstoneButton.isDown()) {
-            capstoneServo.setPosition(0.3);
+            capstoneServo.setPosition(0.47);
         } else {
-            capstoneServo.setPosition(0.7);
+            capstoneServo.setPosition(0.65);
         }
     }
 

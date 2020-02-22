@@ -130,20 +130,20 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         sleep(200);
 
         switch (position) {
-            case LEFT_STONE:
+            case RIGHT_STONE:
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -22.5, .4, 1.5), telemetry);
                 break;
             case CENTER_STONE:
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -13.75, .4, 1), telemetry);
                 break;
-            case RIGHT_STONE:
+            case LEFT_STONE:
                 alignToSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, -5.0, .4, 1), telemetry);
                 break;
         }
 
         alignToSkystone.runCommand();
 
-        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 15.5, 0, 34, 1.5, telemetry), telemetry);
+        goToSkystone = new CommandRunner(this, new MecanumDriveCommand(driveController, 17, 0, 34, 1.5, telemetry), telemetry);
         goToSkystone.runCommand();
 
         getSkystone = new CommandRunner(this, new DrivePIDCommand(driveController, 3, .4, 1), telemetry);
@@ -154,25 +154,25 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         sleep(500);
 
 
-        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12.5, 180, 34, 3, telemetry), telemetry);
+        strafeAwaySkystone1 = new CommandRunner(this, new MecanumDriveCommand(driveController, 12, 180, 34, 3, telemetry), telemetry);
         strafeAwaySkystone1.runCommand();
 
         sleep(100);
-
         switch (position) {
-            case LEFT_STONE:
+            case RIGHT_STONE:
                 goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (91.5), 1, 3), telemetry);
                 break;
             case CENTER_STONE:
                 goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (85.75), 1, 3), telemetry);
                 break;
-            case RIGHT_STONE:
+            case LEFT_STONE:
                 goToFoundation = new CommandRunner(this, new DrivePIDCommand(driveController, (74.5), 1, 2.5), telemetry);
                 break;
         }
 
         goToFoundation.runCommand();
-        sleep(500);
+
+        sleep(100);
         liftArm = new CommandRunner(this, new MoveArmCommand(claws, 425, 1.75), telemetry);
         liftArm.runCommand();
 
@@ -188,7 +188,7 @@ public class BLUE_NEW_HIGHPOINT extends LinearOpMode {
         backUp = new CommandRunner(this, new DrivePIDCommand(driveController, -7, .4, 1), telemetry);
         backUp.runCommand();
         sleep(50);
-        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 20, .4, 4), telemetry);
+        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, 35, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
         moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);

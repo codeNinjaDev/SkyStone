@@ -101,7 +101,7 @@ public class DriveSubsystem implements Subsystem {
         //speed
 
         if(slowModeButton.isDown()){
-            MAX_SPEED = 0.25;
+            MAX_SPEED = 0.35;
         } else {
             MAX_SPEED = 1;
         }

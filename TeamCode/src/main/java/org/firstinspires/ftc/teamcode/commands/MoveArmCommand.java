@@ -19,7 +19,8 @@ public class MoveArmCommand implements Command {
         reset();
         arm.leftArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.rightArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        arm.leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
@@ -30,8 +31,8 @@ public class MoveArmCommand implements Command {
 
     public void update(Telemetry tl) {
         if(position > 0) {
-            arm.leftArmMotor.setPower(0.45);
-            arm.rightArmMotor.setPower(0.45);
+            arm.leftArmMotor.setPower(0.6);
+            arm.rightArmMotor.setPower(0.6);
         } else {
             arm.leftArmMotor.setPower(-0.2);
             arm.rightArmMotor.setPower(-0.2);

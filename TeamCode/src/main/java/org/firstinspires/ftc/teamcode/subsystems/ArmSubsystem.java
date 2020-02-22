@@ -25,6 +25,7 @@ public class ArmSubsystem implements Subsystem {
     private TriggerReader armDownButton;
     private ButtonReader armUpButton;
     private ToggleButtonReader foldIntakeButton;
+    private ToggleButtonReader slowMode;
 
     //311
     public ArmSubsystem(SuperGamepad driverGamepad, HardwareMap hardwareMap) {
@@ -37,7 +38,7 @@ public class ArmSubsystem implements Subsystem {
         leftArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("leftArmMotor");
         rightArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("rightArmMotor");
 
-        rightArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -46,7 +47,7 @@ public class ArmSubsystem implements Subsystem {
         armDownButton = new TriggerReader(driverGamepad, GamepadKeys.Trigger.LEFT_TRIGGER);
         armUpButton = new ButtonReader(driverGamepad, GamepadKeys.Button.LEFT_BUMPER);
         foldIntakeButton = new ToggleButtonReader(driverGamepad, GamepadKeys.Button.X);
-
+        slowMode = new ToggleButtonReader(driverGamepad, GamepadKeys.Button.A);
     }
 
     public void init() {
@@ -66,8 +67,7 @@ public class ArmSubsystem implements Subsystem {
         armDownButton.readValue();
         armUpButton.readValue();
         foldIntakeButton.readValue();
-
-
+        slowMode.readValue();
 
         if(!foldIntakeButton.getState()) {
             if (intakeToggle.getState()) {
@@ -80,16 +80,23 @@ public class ArmSubsystem implements Subsystem {
         }
 
 
+        if(slowMode.getState()) {
+            leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else {
+            leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            rightArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
+
         if(armDownButton.isDown()) {
-            leftArmMotor.setPower(-0.25);
-            rightArmMotor.setPower(-0.25);
+            leftArmMotor.setPower(-0.4);
+            rightArmMotor.setPower(-0.4);
         } else if(armUpButton.isDown()) {
-            leftArmMotor.setPower(0.4);
-            rightArmMotor.setPower(0.4);
+            leftArmMotor.setPower(0.5);
+            rightArmMotor.setPower(0.5);
         } else {
             leftArmMotor.setPower(0);
-            rightArmMotor.setPower(-0);
-
+            rightArmMotor.setPower(0);
         }
     }
 

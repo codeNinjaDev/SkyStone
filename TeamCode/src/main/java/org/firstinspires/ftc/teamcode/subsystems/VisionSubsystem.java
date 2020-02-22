@@ -18,7 +18,7 @@ public class VisionSubsystem implements Subsystem {
 
     public VisionSubsystem(HardwareMap hw) {
         int cameraMonitorViewId = hw.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hw.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        webcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT, cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View
         //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
@@ -28,10 +28,28 @@ public class VisionSubsystem implements Subsystem {
          */
         webcam.openCameraDevice();
 
-        detector = new SkystoneDetectorEx(63,25, 30, 50, 50);
+        detector = new SkystoneDetectorEx(40,30, 25, 50, 50);
         webcam.setPipeline(detector);
 
         webcam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+    }
+
+    public VisionSubsystem(HardwareMap hw, int upsideDown) {
+        int cameraMonitorViewId = hw.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hw.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT, cameraMonitorViewId);
+
+        // OR...  Do Not Activate the Camera Monitor View
+        //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+
+        /*
+         * Open the connection to the camera device
+         */
+        webcam.openCameraDevice();
+
+        detector = new SkystoneDetectorEx(40,30, 25, 50, 50);
+        webcam.setPipeline(detector);
+
+        webcam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_LEFT);
     }
 
     public SkystoneDetector.SkystonePosition getSkystonePosition() {
