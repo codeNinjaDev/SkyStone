@@ -175,12 +175,13 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
         turnTowardsFoundation = new CommandRunner(this, new TurnGyroCommand(driveController, 90, .2,3), telemetry);
         turnTowardsFoundation.runCommand();
 
-        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 18, 90, 16, .8, true,  telemetry), telemetry);
+        moveTowardsFoundation = new CommandRunner(this, new MecanumDriveCommand(driveController, 19.5, 90, 16, .8, true,  telemetry), telemetry);
         moveTowardsFoundation.runCommand();
         foundation.moveFoundationDown();
 
+
         sleep(800);
-        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, -30, .4, 4), telemetry);
+        turnTowardsBuildingZone = new CommandRunner(this, new TurnGyroCommand(driveController, -25, .4, 4), telemetry);
         turnTowardsBuildingZone.runCommand();
 
         moveFoundationIntoWall = new CommandRunner(this, new MecanumDriveCommand(driveController, 50, 90, 30, 3, true, telemetry), telemetry);
@@ -196,7 +197,7 @@ public class RED_NEW_HIGHPOINT extends LinearOpMode {
 
         CommandRunner alignRobot = new CommandRunner(this, new TurnGyroCommand(driveController, 0, .2, 2), telemetry);
         alignRobot.runCommand();
-        CommandRunner giveSpace = new CommandRunner(this, new MecanumDriveCommand(driveController, 2, 180, 30,1, telemetry), telemetry);
+        CommandRunner giveSpace = new CommandRunner(this, new MecanumDriveCommand(driveController, 1, 180, 30,1, telemetry), telemetry);
         giveSpace.runCommand();
         park = new CommandRunner(this, new MecanumDriveCommand(driveController, 36, -90, 30,10, telemetry), telemetry);
         park.runCommand();
